@@ -21,7 +21,7 @@ async function torneo(id) {
 const partido = m => [m.local_team.club_id, m.visit_team.club_id, m.local_team_score, m.visit_team_score, m.local_team_offensive_bonus, m.visit_team_offensive_bonus, m.fulfilled ? 1 : 0, m.suspended ? 1 : 0];
 
 async function urba() {
-  const SRES = {}, TABLAS = {}; let LIGA = '';
+  const SRES = {}, TABLAS = {}, LIGAS = {};
   for (const [eq, id] of Object.entries(TORNEOS)) {
     const { rondas, tabla } = await torneo(id);
     SRES[eq] = rondas.map(r => {
@@ -31,9 +31,9 @@ async function urba() {
       return `${loc ? 'L' : 'V'}${loc ? m[1] : m[0]}:${res}`;
     }).join(' ');
     TABLAS[eq] = tabla.map(s => [s.team.club_id, s.position, s.played, s.won, s.tied, s.lost, s.points_favor, s.points_against, s.bonus_offensive, s.bonus_defensive, s.points_total].join(',')).join('|');
-    if (eq === 'P') LIGA = rondas.map(r => `${r.name.replace(/\D/g, '')}@${r.playdate.slice(0, 10)}:${r.matches.map(m => partido(m).join(',')).join(';')}`).join('\n');
+    LIGAS[eq] = rondas.map(r => `${r.name.replace(/\D/g, '')}@${r.playdate.slice(0, 10)}:${r.matches.map(m => partido(m).join(',')).join(';')}`).join('\n');
   }
-  return { SRES, LIGA, TABLAS };
+  return { SRES, LIGA: LIGAS.P, LIGAS, TABLAS };
 }
 
 // Devuelve el id del video si el canal está transmitiendo ahora; null si no.
@@ -45,12 +45,12 @@ async function vivo() {
   return id && /"isLive(Now)?":true/.test(h) && !/"isUpcoming":true/.test(h) ? id : null;
 }
 
-const datos = { SRES: previo.SRES, LIGA: previo.LIGA, TABLAS: previo.TABLAS, vivo: null };
+const datos = { SRES: previo.SRES, LIGA: previo.LIGA, LIGAS: previo.LIGAS, TABLAS: previo.TABLAS, vivo: null };
 try { Object.assign(datos, await urba()); } catch (e) { console.error('No se actualizó URBA, se conservan los datos anteriores:', e.message); }
 try { datos.vivo = await vivo(); } catch (e) { console.error('No se pudo consultar YouTube:', e.message); datos.vivo = null; }
 if (!datos.SRES || !datos.LIGA || !datos.TABLAS) { console.error('Sin datos de URBA: no se escribe nada.'); process.exit(0); }
 
-const firma = d => JSON.stringify([d.SRES, d.LIGA, d.TABLAS, d.vivo ?? null]);
+const firma = d => JSON.stringify([d.SRES, d.LIGA, d.LIGAS ?? null, d.TABLAS, d.vivo ?? null]);
 if (firma(datos) === firma(previo)) { console.log('Sin cambios.'); process.exit(0); }
 datos.actualizado = new Intl.DateTimeFormat('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
 writeFileSync(SALIDA, '// Generado automáticamente por scripts/actualizar.mjs. No editar a mano.\nwindow.DATOS=' + JSON.stringify(datos) + ';\n');

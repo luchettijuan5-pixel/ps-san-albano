@@ -173,13 +173,19 @@ main{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:22px 60px;
 .envivo.off:hover .ev-in{background:none}.envivo.off:hover{border-color:var(--muted)}
 .envivo.off .ev-badge{background:none;color:var(--muted);padding:0;font-size:.7rem;order:2;flex-basis:100%}.envivo.off .ev-badge i{display:none}
 .envivo.off .ev-teams{display:flex;width:auto;max-width:none;gap:10px;order:1}
-.envivo.off .ev-teams>span:not(.play){flex-direction:row;gap:6px;font-size:1rem;color:var(--ink)}
+.envivo.off .ev-teams>span:not(.play),.envivo.off a.rv{display:flex;align-items:center;flex-direction:row;gap:6px;font-size:1rem;font-weight:700;color:var(--ink)}
+.envivo.off a.rv{text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}.envivo.off a.rv:hover{color:var(--sky-ink)}.envivo.off a.rv.in{display:inline;font-size:inherit;color:inherit}
 .envivo.off .crest.lg{width:24px;height:24px;filter:grayscale(1) opacity(.8)}
 .envivo.off .play.big{order:-1;width:34px;height:34px;background:#8A94A1;animation:none;box-shadow:none}.envivo.off .play.big::after{border-left-width:11px;border-block-width:7px;margin-left:3px}
 .envivo.off .ev-foot{display:none}
 .ev-in{min-height:260px}
 .hero{position:relative}.hero-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:transparent}.hero-txt{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.hero-v{display:none}}
+.rvl{list-style:none;margin:6px 0 0;padding:0}
+.rvl li{display:grid;grid-template-columns:110px minmax(0,1fr) auto 22px 96px;gap:12px;align-items:center;padding:12px 2px;border-bottom:1px solid var(--line)}
+.rvl b{font-size:1.1rem}.rv-m{display:flex;align-items:center;gap:10px;min-width:0}.rv-m>span{display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}.rv-m small,.rv-p{color:var(--muted)}
+.rvl .num{font-size:1.3rem;white-space:nowrap}.rv-p{text-align:right;white-space:nowrap}
+@media (max-width:600px){.rvl li{grid-template-columns:minmax(0,1fr) auto 22px;row-gap:4px}.rvl b{grid-column:1/-1}.rv-p{grid-column:1/-1;text-align:left}}
 .envivo.emb{padding:14px;display:flex;flex-direction:column;gap:12px;align-items:center;background-image:none!important}.emb-v{width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden}.emb-v iframe{width:100%;height:100%;border:0;display:block}.envivo.emb .ev-foot{color:#DCE6F3}
 .sec{display:flex;align-items:center;gap:14px;margin-top:10px;font-size:1.02rem}.sec::after{content:"";flex:1;height:1px;background:var(--line)}.sec::before{content:"";width:22px;height:4px;background:var(--gold)}
 .foto{margin:0}.foto img{width:100%;display:block;border-radius:var(--r)}.foto figcaption{font-size:.85rem;color:var(--muted);font-style:italic;margin-top:6px}
@@ -545,7 +551,7 @@ const DEMO=(()=>{
 })();
 
 /* ===================== Estado ===================== */
-const S={cam:1,home:'club',votF:0,plQ:'',plPos:'',plV:'pos',demo:true,tbEq:'P',lf:0,fxEq:'P',fxSt:'',sort:'pts',dir:-1,f:{eq:'',pos:'',q:'',desde:'',hasta:'',cond:''}};
+const S={cam:1,fEq:'P',home:'club',votF:0,plQ:'',plPos:'',plV:'pos',demo:true,tbEq:'P',lf:0,fxEq:'P',fxSt:'',sort:'pts',dir:-1,f:{eq:'',pos:'',q:'',desde:'',hasta:'',cond:''}};
 try{const v=localStorage.getItem('sa-demo');if(v!=null)S.demo=v==='1'}catch(e){}
 S.demo=false; // todas las fechas jugadas tienen formación real: se retiran las fichas de ejemplo
 const jugadores=()=>S.demo?JUGADORES.concat(DEMO.jug):JUGADORES;
@@ -613,10 +619,14 @@ function vInicio(){
   const equipos=`<div><h3 class="sec">${hayNx?'Fecha '+nx.fecha+' · '+(nx.loc==='L'?'vs':'en')+' '+nx.rival:'Equipos del sábado'}</h3>
     ${hayNx?xvCols(nx.fecha):`<p class="lead2">${nx?`Los equipos para ${nx.loc==='L'?'recibir a':'visitar a'} ${nx.rival} se publican el viernes.`:'No quedan partidos de la fase regular.'}</p><p class="sub" style="margin:4px 0 18px">Mientras tanto, estos fueron los titulares de la fecha ${ult.fecha}, ${ult.loc==='L'?'contra':'en'} ${ult.rival}.</p>${xvCols(ult.fecha)}`}</div>`;
   const nh=PARTIDOS.find(m=>m.eq==='P'&&!jugado(m)&&m.loc==='L'), VIVO=enVivo(nh);
-  const PANEL=nh?`<a class="envivo ${VIVO?'':'off'}" href="${YOUTUBE}${VIVO?'/live':''}" target="_blank" rel="noopener" style="background-image:url(data:image/webp;base64,${PH.cancha})" aria-label="${VIVO?'Ver en vivo':'Canal de YouTube del club. Próxima transmisión:'} San Albano contra ${nh.rival}">
-    <span class="ev-in"><span class="ev-badge"><i></i>${VIVO?'En vivo · Fecha '+nh.fecha:'Transmisión en vivo · Se habilita el sábado '+fd(nh)+(nx&&nx.id!==nh.id?' · Antes jugamos de visitante en '+nx.rival:'')}</span>
+  const rv=(m,cls='')=>`<a class="rv ${cls}" href="#rival-${m.rid}" title="Ver cómo le fue a ${m.rival} en su última fecha">${crest(m.rid,'lg')}${m.rival}</a>`;
+  const PANEL=!nh?'':VIVO?`<a class="envivo" href="${YOUTUBE}/live" target="_blank" rel="noopener" style="background-image:url(data:image/webp;base64,${PH.cancha})" aria-label="Ver en vivo San Albano contra ${nh.rival}">
+    <span class="ev-in"><span class="ev-badge"><i></i>En vivo · Fecha ${nh.fecha}</span>
       <span class="ev-teams"><span>${crest(SA,'lg')}San Albano</span><span class="play big" aria-hidden="true"></span><span>${crest(nh.rid,'lg')}${nh.rival}</span></span>
-      <span class="ev-foot">${VIVO?`Hoy en Corimayo · Primera a las ${nh.hora} · Tocá para verlo en YouTube`:`Sábado ${fd(nh)}, ${nh.hora} · Corimayo · Se enciende cuando empieza la transmisión${nx&&nx.id!==nh.id?`<br>Antes, el sábado ${fd(nx)}, jugamos de visitante en ${nx.rival}.`:''}`}</span></span></a>`:'';
+      <span class="ev-foot">Hoy en Corimayo · Primera a las ${nh.hora} · Tocá para verlo en YouTube</span></span></a>`
+  :`<div class="envivo off"><span class="ev-in">
+      <span class="ev-teams"><a class="play big" href="${YOUTUBE}" target="_blank" rel="noopener" aria-label="Canal de YouTube del Club San Albano"></a><span>${crest(SA,'lg')}San Albano</span>${rv(nh)}</span>
+      <span class="ev-badge">Transmisión en vivo · Se habilita el sábado ${fd(nh)}${nx&&nx.id!==nh.id?` · Antes jugamos de visitante en <a class="rv in" href="#rival-${nx.rid}">${nx.rival}</a>`:''}</span></span></div>`;
   const EMBED=DATOS.vivo?`<div class="envivo emb"><span class="ev-badge"><i></i>En vivo${nh&&enHoy(nh)?' · Fecha '+nh.fecha+' · San Albano vs '+nh.rival:''}</span><div class="emb-v"><iframe src="https://www.youtube.com/embed/${DATOS.vivo}?autoplay=1&mute=1&playsinline=1" title="Transmisión en vivo del Club San Albano" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><a class="ev-foot" href="https://www.youtube.com/watch?v=${DATOS.vivo}" target="_blank" rel="noopener">Abrir en YouTube →</a></div>`:'';
   return `<section class="view home">
   ${VIVO?(EMBED||PANEL):''}
@@ -841,24 +851,49 @@ const CANCHA={1:[36,9],2:[50,9],3:[64,9],4:[43,20],5:[57,20],6:[27,26],7:[73,26]
 // Ranking por camiseta: cuenta partidos por división y ordena comparando Primera, después Intermedia, Pre A y Pre B (nunca suma entre divisiones)
 // Jugadores que en este ranking cuentan siempre con una misma camiseta, sin importar cuál usaron cada sábado
 const CAMISETA_FIJA={'castellano-francisco':5};
-function rankCamiseta(n){
-  const eqs=Object.keys(EQUIPOS), R={};
-  for(const p of parts()){ if(!p.n||p.n>15||(CAMISETA_FIJA[p.j]||p.n)!==n||p.rol==='N')continue; const r=R[p.j]||(R[p.j]={id:p.j,c:Object.fromEntries(eqs.map(q=>[q,0]))}); r.c[M[p.m].eq]++ }
-  return Object.values(R).sort((a,b)=>{for(const q of eqs){if(a.c[q]!==b.c[q])return b.c[q]-a.c[q]}return J(a.id).nombre.localeCompare(J(b.id).nombre)});
+// Ranking de una camiseta dentro de un equipo: solo quienes la usaron en ese equipo, de más a menos partidos
+function rankCamiseta(n,eq){
+  const R={};
+  for(const p of parts()){ if(!p.n||p.n>15||(CAMISETA_FIJA[p.j]||p.n)!==n||p.rol==='N'||M[p.m].eq!==eq)continue; R[p.j]=(R[p.j]||0)+1 }
+  return Object.entries(R).map(([id,c])=>({id,c})).sort((a,b)=>b.c-a.c||J(a.id).nombre.localeCompare(J(b.id).nombre));
 }
 function vFormacion(){
-  const n=S.cam, pos=XV[n-1], rk=rankCamiseta(n), eqs=Object.keys(EQUIPOS);
-  const cam=k=>{const top=rankCamiseta(+k)[0];return `<button class="cam" data-cam="${k}" aria-pressed="${+k===n}" style="left:${CANCHA[k][0]}%;top:${CANCHA[k][1]}%" title="${k} · ${POS[XV[k-1]][0]}"><b>${k}</b><span>${top?apellido(J(top.id)):'—'}</span></button>`};
-  return `<section class="view"><div class="head"><div><h2>Formación</h2><p>Tocá una camiseta para ver quiénes jugaron en ese puesto durante el año. Debajo de cada número figura el primero del ranking.</p></div></div>
+  const n=S.cam, eq=S.fEq, pos=XV[n-1], rk=rankCamiseta(n,eq);
+  const cam=k=>{const top=rankCamiseta(+k,eq)[0];return `<button class="cam" data-cam="${k}" aria-pressed="${+k===n}" style="left:${CANCHA[k][0]}%;top:${CANCHA[k][1]}%" title="${k} · ${POS[XV[k-1]][0]}"><b>${k}</b><span>${top?apellido(J(top.id)):'—'}</span></button>`};
+  const chip=(k,l)=>`<button class="chip" data-k="fEq" data-v="${k}" aria-pressed="${eq===k}">${l}</button>`;
+  return `<section class="view"><div class="head"><div><h2>Formación</h2><p>El equipo que más se repitió en ${EQUIPOS[eq]}: debajo de cada número figura quien más veces usó esa camiseta. Tocá una camiseta para ver todas las alternativas del puesto.</p></div></div>
+  <div class="chips" role="group" aria-label="Equipo">${Object.entries(EQUIPOS).map(([k,v])=>chip(k,v)).join('')}</div>
   <div class="fmn">
-    <div class="pitch" role="group" aria-label="Cancha con las camisetas 1 a 15">${Object.keys(CANCHA).map(cam).join('')}</div>
-    <div class="fmt"><span class="lbl">Camiseta</span>
+    <div class="pitch" role="group" aria-label="Cancha con las camisetas 1 a 15 de ${EQUIPOS[eq]}">${Object.keys(CANCHA).map(cam).join('')}</div>
+    <div class="fmt"><span class="lbl">${EQUIPOS[eq]} · Camiseta</span>
       <h3 class="fmh"><b>${n}</b>${POS[pos][0]}</h3>
-      <p class="sub" style="margin:2px 0 12px">${rk.length} ${rk.length===1?'jugador usó':'jugadores usaron'} esta camiseta. El orden compara primero Primera, después Intermedia, Pre A y Pre B.</p>
-      <div class="tw"><table><thead><tr><th>#</th><th class="l">Jugador</th>${eqs.map(q=>`<th>${EQUIPOS[q]}</th>`).join('')}</tr></thead>
-      <tbody>${rk.map((r,i)=>`<tr class="${i?'':'sa'}"><td>${i+1}</td><td class="l">${pl(r.id)}</td>${eqs.map(q=>`<td>${r.c[q]||'<span style="color:var(--muted)">0</span>'}</td>`).join('')}</tr>`).join('')||`<tr><td colspan="${eqs.length+2}" class="l empty">Sin partidos cargados en este puesto.</td></tr>`}</tbody></table></div>
+      <p class="sub" style="margin:2px 0 12px">${rk.length} ${rk.length===1?'jugador usó':'jugadores usaron'} esta camiseta en ${EQUIPOS[eq]}, de más a menos partidos.</p>
+      <div class="tw"><table><thead><tr><th>#</th><th class="l">Jugador</th><th>Partidos en ${EQUIPOS[eq]}</th></tr></thead>
+      <tbody>${rk.map((r,i)=>`<tr class="${i?'':'sa'}"><td>${i+1}</td><td class="l">${pl(r.id)}</td><td>${r.c}</td></tr>`).join('')||`<tr><td colspan="3" class="l empty">Sin partidos cargados en este puesto.</td></tr>`}</tbody></table></div>
     </div>
   </div></section>`;
+}
+
+/* ===================== Rival: cómo le fue en su última fecha ===================== */
+const LIGAS=DATOS.LIGAS||{P:LIGA};
+function ultimaDe(club,eq){ // último partido jugado por ese club en esa división
+  const L=LIGAS[eq]; if(!L)return null; const rs=L.split('\n');
+  for(let i=rs.length-1;i>=0;i--){const [cab,cu]=rs[i].split(':'), m=cu.split(';').map(x=>x.split(',').map(Number)).find(x=>(x[0]===club||x[1]===club)&&x[6]);
+    if(m){const loc=m[0]===club;return {fecha:+cab.split('@')[0],dia:cab.split('@')[1],loc,riv:loc?m[1]:m[0],pf:loc?m[2]:m[3],pc:loc?m[3]:m[2]}}}
+  return undefined;
+}
+function vRival(id){
+  id=+id; const c=CLUBES[id]; if(!c||id===SA)return vInicio();
+  const nx=PARTIDOS.find(m=>m.eq==='P'&&!jugado(m)&&m.rid===id), eqs=Object.keys(EQUIPOS);
+  const fila=q=>{const u=ultimaDe(id,q), t=tabla(q).find(r=>r.c===id); const l=u&&(u.pf>u.pc?'G':u.pf<u.pc?'P':'E');
+    return `<li><b>${EQUIPOS[q]}</b>${u?`<span class="rv-m">${crest(u.riv,'sm')}<span>${u.loc?'vs':'en'} ${CLUBES[u.riv].n}<small>Fecha ${u.fecha} · ${u.dia.slice(8)}/${u.dia.slice(5,7)} · ${u.loc?'local':'visitante'}</small></span></span><span class="num">${u.pf}–${u.pc}</span><span class="res ${l}">${l}</span>`:`<span class="rv-m empty">${u===null?'Se completa con la próxima actualización desde URBA':'Todavía no jugó'}</span><span></span><span></span>`}<small class="rv-p">${t?t.pos+'° · '+t.pts+' pts':''}</small></li>`};
+  return `<section class="view"><div><a class="btn ghost" href="#inicio">← Inicio</a></div>
+  <div class="pl-head">${crest(id,'lg')}<div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span class="lbl">${nx?`Próximo rival · Fecha ${nx.fecha} · ${fd(nx)} · ${nx.loc==='L'?'en Corimayo':'de visitante'}`:'Rival'}</span><h2>${c.n}</h2><span class="sub">${c.col}</span></div></div>
+  <div><h3 class="sec">Cómo le fue en su última fecha</h3>
+    <ul class="rvl">${eqs.map(fila).join('')}</ul>
+    <p class="sub" style="margin:10px 0 0">Resultados y posiciones oficiales de URBA. A la derecha, la posición actual de cada equipo en su tabla.</p></div>
+  ${nx?`<div><a class="btn" href="#partido-${nx.id}">Ver nuestro partido</a></div>`:''}
+  </section>`;
 }
 
 /* ===================== Votación del domingo ===================== */
@@ -892,7 +927,8 @@ async function votar(mid,pid){ if(!DBV||!UID)return; VERR='';
 const app=document.getElementById('app');
 function render(keep){
   const h=(location.hash||'#inicio').slice(1); let v,sec=h;
-  if(h.startsWith('partido-')){v=vPartido(h.slice(8));sec='fixture'}
+  if(h.startsWith('rival-')){v=vRival(h.slice(6));sec='inicio'}
+  else if(h.startsWith('partido-')){v=vPartido(h.slice(8));sec='fixture'}
   else if(h.startsWith('jugador-')){v=vJugador(h.slice(8));sec='plantel'}
   else v=({inicio:vInicio,competencia:vCompetencia,fixture:vFixture,partidos:vPartidos,plantel:vPlantel,formacion:vFormacion}[h]||(sec='inicio',vInicio))();
   const BAN={competencia:['cancha','Competencia'],fixture:['cancha','Fixture '+TEMPORADA.anio],partidos:['partidos','Partidos'],estadisticas:['stats','Estadísticas'],plantel:['plantel','Plantel'],votacion:['plantel','El jugador de la fecha'],formacion:['cancha','Formación en cancha']}[h];
