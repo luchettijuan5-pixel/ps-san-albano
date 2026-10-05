@@ -850,7 +850,7 @@ function vJugador(id){
 const CANCHA={1:[36,9],2:[50,9],3:[64,9],4:[43,20],5:[57,20],6:[27,26],7:[73,26],8:[50,31],9:[42,45],10:[32,56],12:[46,63],13:[60,70],11:[9,66],14:[91,78],15:[52,90]};
 // Ranking por camiseta: cuenta partidos por división y ordena comparando Primera, después Intermedia, Pre A y Pre B (nunca suma entre divisiones)
 // Jugadores que en este ranking cuentan siempre con una misma camiseta, sin importar cuál usaron cada sábado
-const CAMISETA_FIJA={'castellano-francisco':5};
+const CAMISETA_FIJA={'castellano-francisco':5,'juanuk-gael':7};
 // Ranking de una camiseta dentro de un equipo: solo quienes la usaron en ese equipo, de más a menos partidos
 function rankCamiseta(n,eq){
   const R={};
@@ -875,7 +875,8 @@ function vFormacion(){
 }
 
 /* ===================== Rival: cómo le fue en su última fecha ===================== */
-const LIGAS=DATOS.LIGAS||{P:LIGA};
+// Respaldo: las dos últimas fechas de Intermedia, Pre A y Pre B (URBA, 5/10/2026). En la web lo reemplaza la actualización automática.
+const LIGAS=DATOS.LIGAS||{P:LIGA,I:"22@2026-09-26:17,16,16,57,0,1,1,0;18,32,38,23,1,0,1,0;14,25,19,26,0,0,1,0;30,29,19,22,0,0,1,0;22,31,24,12,0,0,1,0;5,19,38,28,1,0,1,0;24,15,16,21,0,0,1,0\n23@2026-10-03:16,15,17,20,0,0,1,0;19,24,52,12,1,0,1,0;31,5,14,22,0,0,1,0;29,22,31,28,0,0,1,0;25,30,35,14,1,0,1,0;32,14,27,27,0,0,1,0;17,18,19,46,0,1,1,0",A:"22@2026-09-26:17,16,38,48,0,0,1,0;18,32,36,19,1,0,1,0;14,25,38,29,0,0,1,0;30,29,50,12,1,0,1,0;22,31,63,38,1,0,1,0;5,19,52,31,1,0,1,0;24,15,25,24,0,0,1,0\n23@2026-10-03:16,15,17,17,0,0,1,0;19,24,11,19,0,0,1,0;31,5,14,38,0,1,1,0;29,22,15,61,0,1,1,0;25,30,30,17,0,0,1,0;32,14,38,36,0,0,1,0;17,18,30,20,0,0,1,0",B:"22@2026-09-26:17,16,0,83,0,1,1,0;18,32,25,26,0,0,1,0;14,25,7,73,0,1,1,0;30,29,78,0,1,0,1,0;22,31,73,31,1,0,1,0;5,19,95,12,1,0,1,0;24,15,26,27,0,0,1,0\n23@2026-10-03:16,15,65,14,1,0,1,0;19,24,10,28,0,1,1,0;31,5,22,61,0,1,1,0;29,22,0,105,0,1,1,0;25,30,40,20,1,0,1,0;32,14,31,34,0,0,1,0;17,18,24,39,0,0,1,0"};
 function ultimaDe(club,eq){ // último partido jugado por ese club en esa división
   const L=LIGAS[eq]; if(!L)return null; const rs=L.split('\n');
   for(let i=rs.length-1;i>=0;i--){const [cab,cu]=rs[i].split(':'), m=cu.split(';').map(x=>x.split(',').map(Number)).find(x=>(x[0]===club||x[1]===club)&&x[6]);
