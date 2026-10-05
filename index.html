@@ -830,6 +830,8 @@ const FICHAS = {};
 function vJugador(id){
   const j=J(id); if(!j)return vPlantel();
   const r=calc({}).find(x=>x.id===id)||{pj:0,tit:0,try:0,conv:0,pen:0,drop:0,pts:0,ama:0,roja:0,eqs:{},ms:[]};
+  // Ingresos como suplente en Primera (planilla del club) que no están ya contados por las placas ni por los tantos
+  const supX=(()=>{const row=EST.P.rows.split(';').map(x=>x.split(',')).find(x=>x[0]===id);if(!row)return 0;const ya=r.ms.filter(x=>x.m.eq==='P'&&x.p.rol==='S').length;return Math.max(0,+row[3]-ya)})();
   const f=FICHAS[id]||{}, vac='<span class="empty">A completar</span>', pie=2*r.conv+3*r.pen+3*r.drop;
   const edad=f.nac?Math.floor((HOY-new Date(f.nac+'T12:00:00'))/31557600000)+' años':null;
   const evm=m=>eventos().filter(x=>x.m===m.id&&x.j===id).reduce((a,x)=>a+(PTS[x.t]||0),0);
@@ -842,8 +844,8 @@ function vJugador(id){
     <h2>${j.nombre}${capi(id)}</h2><span>${posN(j)}${j.alt&&j.alt.length?' · también '+j.alt.map(k=>POS[k][0].toLowerCase()).join(', '):''}</span></div></div>
   ${(()=>{const d=[[f.camada,'Camada'],[edad,'Edad'],[f.altura,'Altura'],[f.peso,'Peso']].filter(x=>x[0]);return d.length?`<div><h3 class="sec">Datos personales</h3><div class="figs txt">${d.map(x=>fig(x[0],x[1])).join('')}</div></div>`:''})()}
   <div><h3 class="sec">Temporada ${TEMPORADA.anio}</h3>
-    <div class="figs">${fig(r.pj,'Partidos jugados')}${fig(r.pts,'Puntos')}${fig(r.try,'Tries')}${fig(pie,'Puntos con el pie')}${fig(`<span class="vd G">${v}</span> · <span class="vd E">${e}</span> · <span class="vd P">${d}</span>`,'Ganados · empatados · perdidos')}</div>
-    <p class="sub" style="margin:8px 0 0">${Object.entries(r.eqs).map(([k,n])=>EQUIPOS[k]+': '+n).join(' · ')||'Sin partidos registrados'}${pie?` · Con el pie: ${r.conv} conversiones, ${r.pen} penales, ${r.drop} drops`:''}</p></div>
+    <div class="figs">${fig(r.pj+supX,'Partidos jugados')}${fig(r.pts,'Puntos')}${fig(r.try,'Tries')}${fig(pie,'Puntos con el pie')}${fig(`<span class="vd G">${v}</span> · <span class="vd E">${e}</span> · <span class="vd P">${d}</span>`,'Ganados · empatados · perdidos')}</div>
+    <p class="sub" style="margin:8px 0 0">${Object.entries(supX?{...r.eqs,P:(r.eqs.P||0)+supX}:r.eqs).map(([k,n])=>EQUIPOS[k]+': '+n).join(' · ')||'Sin partidos registrados'}${supX?` · Incluye ${supX} ${supX===1?'ingreso':'ingresos'} como suplente en Primera`:''}${pie?` · Con el pie: ${r.conv} conversiones, ${r.pen} penales, ${r.drop} drops`:''}</p></div>
   ${(()=>{const h=HIST[id];return h?`<div><h3 class="sec">Trayectoria</h3><div class="figs">${fig(h.pj,'Partidos totales')}${fig(h.tr,'Tries totales')}${fig(h.pts,'Puntos totales')}</div><p class="sub" style="margin:8px 0 0">${h.deb?'Debut: '+h.deb+' de '+TEMPORADA.anio+' · ':''}Según la planilla del club.</p></div>`:''})()}
   <div><h3 class="sec">Partidos</h3>
     ${ms.length?`<ul class="pms">${ms.map(({m,p})=>`<li><a href="#partido-${m.id}">${vd(m)}<span class="num">${m.sa!=null?m.sa+'–'+m.ri:'—'}</span><span class="t"><b>${m.loc==='L'?'vs':'en'} ${m.rival}</b><small>Fecha ${m.fecha} · ${EQUIPOS[m.eq]} · ${p.n&&p.n<=15?'Titular, camiseta '+p.n:{S:'Desde el banco','?':'Participó'}[p.rol]||''}</small></span><span class="pt">${evm(m)?evm(m)+' pts':''}</span></a></li>`).join('')}</ul>`:'<p class="empty">Todavía no tiene partidos cargados.</p>'}</div>
