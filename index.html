@@ -311,7 +311,7 @@ footer a{color:var(--sky-ink)}
       <span><b>San Albano Rugby</b><small>Plantel Superior</small></span>
     </a>
     <nav id="nav" aria-label="Secciones">
-      <a href="#inicio">Inicio</a><a href="#competencia">Competencia</a><a href="#fixture">Fixture</a><a href="#partidos">Partidos</a><a href="#plantel">Plantel</a><a href="#formacion">Formación</a>
+      <a href="#inicio">Inicio</a><a href="#partidos">Partidos</a><a href="#competencia">Posiciones</a><a href="#plantel">Plantel</a><a href="#formacion">Formación</a>
     </nav>
     <label class="demo-sw" hidden title="Muestra jugadores, formaciones y tantos de ejemplo donde todavía no hay datos reales"><input type="checkbox" id="demo"> Datos de ejemplo</label>
   </div>
@@ -614,7 +614,6 @@ let VIVO_PREV=null;
 setInterval(()=>{const v=enVivo(proxLocal());if(VIVO_PREV===null){VIVO_PREV=v;return}if(v!==VIVO_PREV&&((location.hash||'#inicio')==='#inicio'))render(true);VIVO_PREV=v},30000);
 function vInicio(){
   const nx=proximo('P'), img=(k,alt,st='')=>`<img src="data:image/webp;base64,${PH[k]}" alt="${alt}" style="${st}">`;
-  const secs=[['competencia','Competencia','Las posiciones de las cuatro divisiones en la Primera A.'],['fixture','Fixture','El calendario completo de la temporada, partido por partido.'],['partidos','Partidos','Cada jornada con su formación, el resultado y la ficha del partido.'],['formacion','Formación','Las 15 camisetas en la cancha y quiénes jugaron en cada puesto.'],['plantel','Plantel','Los '+JUGADORES.length+' jugadores del Plantel Superior, por puesto o por apellido.']];
   const xvCols=f=>`<div class="xvs">${Object.keys(EQUIPOS).map(q=>{const m=M[q+'-'+f],ps=parts().filter(p=>p.m===m.id&&p.n<=15).sort((a,b)=>a.n-b.n);return `<div><h4><a href="#partido-${m.id}">${EQUIPOS[q]}</a></h4>${ps.length?`<ol>${XV.map((_,i)=>{const p=ps.find(x=>x.n===i+1);return `<li><span>${i+1}</span>${p?pl(p.j):'<i class="empty">—</i>'}</li>`}).join('')}</ol>`:'<p class="empty">Sin publicar</p>'}</div>`}).join('')}</div>`;
   const ult=ultimo('P'), hayNx=nx&&Object.keys(EQUIPOS).some(q=>FORMACIONES[q+'-'+nx.fecha]);
   const tab=(k,l)=>`<button class="chip" data-k="home" data-v="${k}" aria-pressed="${S.home===k}">${l}</button>`;
@@ -643,18 +642,9 @@ function vInicio(){
   ${S.home==='xv'?equipos:`<div class="welcome">
     <div><span class="lbl">Bienvenidos</span>
       <p class="lead">Este es el lugar del Plantel Superior: jugadores, entrenadores y todos los que acompañan al club cada sábado.</p>
-      <p>Acá vas a encontrar lo que pasa con Primera, Intermedia, Pre A y Pre B a lo largo del año, reunido en un solo sitio y siempre a mano desde el celular.</p></div>
+      <p>Partidos, posiciones, plantel y formaciones de Primera, Intermedia, Pre A y Pre B, en un solo sitio y siempre a mano desde el celular.</p></div>
     <figure class="foto">${img('equipo','El plantel de San Albano formado en la cancha, con la hinchada detrás','aspect-ratio:3/2;object-fit:cover')}</figure>
   </div>
-
-  <div><h3 class="sec">Qué hay en la página</h3>
-    <ul class="rows">${secs.map(([h,t,d])=>`<li><a href="#${h}"><b>${t}</b><span>${d}</span><i aria-hidden="true">→</i></a></li>`).join('')}</ul></div>
-
-  <div><h3 class="sec">El club de Corimayo</h3>
-    <div class="hist"><div>
-      <p>El Club San Albano se fundó el 10 de febrero de 1923. El rugby empezó a jugarse en 1947 y el primer equipo debutó oficialmente en 1949. Desde 1981 el club tiene su casa sobre la avenida Espora, en el barrio Corimayo de Burzaco, y por eso al equipo se lo conoce como "el conjunto de Corimayo".</p>
-      <p>La camiseta lleva franjas horizontales amarillas, celestes y azules, con pantalón blanco y medias azules. El plantel superior compite en la Primera A de la URBA, la segunda categoría del rugby de Buenos Aires.</p></div>
-      <ol class="tl"><li><span class="num">1923</span><span>Fundación del club, el 10 de febrero.</span></li><li><span class="num">1947</span><span>Primeros pasos del rugby en San Albano.</span></li><li><span class="num">1949</span><span>Debut oficial del equipo.</span></li><li><span class="num">1981</span><span>Llegada al predio de Av. Espora, en Burzaco.</span></li><li><span class="num">2023</span><span>Centenario.</span></li></ol></div></div>
 
   <div class="gal">
     <figure class="foto">${img('sede','Festejo nocturno con bengalas y bombos frente a la sede del Club San Albano')}<figcaption>Noche de festejo en la sede.</figcaption></figure>
@@ -670,7 +660,7 @@ function vCompetencia(){
   const eq=S.tbEq, rows=tabla(eq), lf=S.lf||(ultimo('P')||{fecha:1}).fecha;
   const zona=r=>eq!=='P'?'':r.pos===1?'Ascenso directo':r.pos<=5?'Play-off':r.pos>=13?'Descenso':'';
   const chip=(k,v,l)=>`<button class="chip" data-k="${k}" data-v="${v}" aria-pressed="${S[k]===v}">${l}</button>`;
-  return `<section class="view"><div class="head"><div><h2>Competencia</h2><p>${TEMPORADA.torneo} ${TEMPORADA.anio}. 14 equipos, 26 fechas, todos contra todos ida y vuelta. Posiciones oficiales de URBA tras la fecha ${(ultimo('P')||{}).fecha||''}.</p></div><a class="btn ghost" href="https://urba.org.ar/fixture?year=2026&id=2025177">Ver en URBA</a></div>
+  return `<section class="view"><div class="head"><div><h2>Posiciones</h2><p>${TEMPORADA.torneo} ${TEMPORADA.anio}. 14 equipos, 26 fechas, todos contra todos ida y vuelta. Posiciones oficiales de URBA tras la fecha ${(ultimo('P')||{}).fecha||''}.</p></div><a class="btn ghost" href="https://urba.org.ar/fixture?year=2026&id=2025177">Ver en URBA</a></div>
   <div class="chips" role="group" aria-label="División">${Object.entries(EQUIPOS).map(([k,v])=>chip('tbEq',k,v)).join('')}</div>
   <div class="tw"><table><thead><tr><th>Pos</th><th class="l">Equipo</th><th title="Partidos jugados">PJ</th><th>G</th><th>E</th><th>P</th><th title="Puntos a favor">PF</th><th title="Puntos en contra">PC</th><th>Dif</th><th title="Bonus ofensivo">BO</th><th title="Bonus defensivo">BD</th><th>Pts</th>${eq==='P'?'<th class="l">Zona</th>':''}</tr></thead>
   <tbody>${rows.map(r=>`<tr class="${r.c===SA?'sa':''}"><td>${r.pos}</td><td class="l"><span style="display:inline-flex;align-items:center;gap:8px">${crest(r.c,'sm')}${CLUBES[r.c].n}</span></td><td>${r.pj}</td><td>${r.g}</td><td>${r.e}</td><td>${r.p}</td><td>${r.pf}</td><td>${r.pc}</td><td>${r.pf-r.pc>0?'+':''}${r.pf-r.pc}</td><td>${r.bo}</td><td>${r.bd}</td><td><b>${r.pts}</b></td>${eq==='P'?`<td class="l">${zona(r)}</td>`:''}</tr>`).join('')}</tbody></table></div>
@@ -686,7 +676,7 @@ function vFixture(){
   let mes=-1,html='';
   for(const m of list){ if(m.date.getMonth()!==mes){mes=m.date.getMonth();html+=`<div class="month">${MES[mes]}</div>`} html+=fxRow(m,nx&&m.id===nx.id) }
   const chip=(k,v,l)=>`<button class="chip" data-k="${k}" data-v="${v}" aria-pressed="${S[k]===v}">${l}</button>`;
-  return `<section class="view"><div class="head"><div><h2>Fixture ${TEMPORADA.anio}</h2><p>Resultados oficiales de URBA. Las cuatro divisiones juegan contra el mismo rival cada sábado. Tocá un partido para abrir su detalle.</p></div></div>
+  return `<section class="view"><div class="head"><div><h2>Partidos</h2><p>La temporada ${TEMPORADA.anio} completa, con resultados oficiales de URBA. Elegí el equipo y tocá un partido para ver la formación.</p></div></div>
   <div class="head"><div class="chips" role="group" aria-label="Equipo">${Object.entries(EQUIPOS).map(([k,v])=>chip('fxEq',k,v)).join('')}</div>
   <div class="chips" role="group" aria-label="Estado">${chip('fxSt','','Todos')}${chip('fxSt','J','Jugados')}${chip('fxSt','P','Próximos')}</div></div>
   <div class="fx-list">${html}</div></section>`;
@@ -694,7 +684,7 @@ function vFixture(){
 
 function vPartidos(){
   const fechas=FIX.filter(([f])=>jugado(M['P-'+f])).reverse();
-  return `<section class="view"><div class="head"><div><h2>Partidos</h2><p>Cada jornada con los cuatro equipos, de la más reciente a la primera.</p></div><a class="btn ghost" href="#fixture">Ver fixture completo</a></div>
+  return `<section class="view"><div class="head"><div><h2>Partidos</h2><p>Cada jornada con los cuatro equipos, de la más reciente a la primera.</p></div><a class="btn ghost" href="#partidos">Ver fixture completo</a></div>
   <div class="grid g3">${fechas.map(([f])=>{const p=M['P-'+f];return `<div class="card jor"><h3>F${f} · ${p.loc==='L'?'vs':'en'} ${p.rival}<span class="lbl">${p.date.getDate()}/${p.date.getMonth()+1}</span></h3>
     <ul>${Object.keys(EQUIPOS).map(q=>{const m=M[q+'-'+f];return `<li><a href="#partido-${m.id}"><b>${EQUIPOS[q]}</b><span class="sub">${m.sa==null?'A cargar':''}</span><span class="sc">${m.sa!=null?m.sa+'–'+m.ri:''}<span class="res ${letra(m)}">${letra(m)==='X'?'?':letra(m)}</span></span></a></li>`}).join('')}</ul></div>`}).join('')}</div></section>`;
 }
@@ -711,36 +701,32 @@ function vPartido(id){
   const big=m.sa!=null?(home?`${m.sa} – ${m.ri}`:`${m.ri} – ${m.sa}`):jugado(m)?'– : –':(m.hora||'vs');
   const enP=id=>ps.some(p=>p.j===id&&p.rol!=='N'), cap=[enP(TEMPORADA.capitan)&&pl(TEMPORADA.capitan),enP(TEMPORADA.subcapitan)&&pl(TEMPORADA.subcapitan)].filter(Boolean).join(' · ')||'<span class="empty">A completar</span>';
   return `<section class="view">
-  <div class="head"><a class="btn ghost" href="#fixture">← Fixture</a><div class="chips">${Object.entries(EQUIPOS).map(([k,v])=>`<a class="chip" style="text-decoration:none" href="#partido-${k}-${m.fecha}" aria-pressed="${k===m.eq}">${v}</a>`).join('')}</div></div>
+  <div class="head"><a class="btn ghost" href="#partidos">← Partidos</a><div class="chips">${Object.entries(EQUIPOS).map(([k,v])=>`<a class="chip" style="text-decoration:none" href="#partido-${k}-${m.fecha}" aria-pressed="${k===m.eq}">${v}</a>`).join('')}</div></div>
   <div class="score"><div class="score-in">
     <div class="tm">${crest(home?SA:m.rid,'lg')}${A}</div>
     <div class="big">${big}<small>${m.sa!=null?'Final':estado(m)}${m.ht?' · PT '+(home?m.ht[0]+'–'+m.ht[1]:m.ht[1]+'–'+m.ht[0]):''}</small></div>
     <div class="tm">${crest(home?m.rid:SA,'lg')}${B}</div></div>
     <div class="score-meta"><span><b>${EQUIPOS[m.eq]}</b></span><span>Fecha <b>${m.fecha}</b></span><span><b>Sábado ${fd(m)}</b>${m.hora?' · '+m.hora:''}</span><span><b>${home?'Local':'Visitante'}</b>${home?' · Corimayo':''}</span></div></div>
 
-  <div class="grid g2">
-    <div class="card"><h3>Titulares</h3>${S.demo&&ps.some(p=>p.demo)?'<p class="sub" style="margin:4px 0 0">Formación de ejemplo, a reemplazar por la planilla real.</p>':''}<ol class="xv">${XV.map((p,i)=>slot(i+1,p)).join('')}</ol></div>
-    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
-      <div class="card"><h3>Suplentes</h3>${FORMACIONES[id]&&!ps.some(p=>p.n>15)?'<p class="sub" style="margin:4px 0 0">El club publicó solo el XV titular.</p>':''}<ol class="xv">${BANCO.map((p,i)=>slot(16+i,p)).join('')}</ol></div>
-      ${sinPos.length?`<div class="card"><h3>Jugaron este partido</h3><p class="sub" style="margin:4px 0 6px">Confirmados por la crónica. Falta su camiseta y si fueron titulares.</p><div class="chips">${sinPos.map(p=>`<span>${pl(p.j)}</span>`).join(' · ')}</div></div>`:''}
-      <div class="card"><h3>Cambios</h3>${cs.length?`<ol class="xv">${cs.map(c=>`<li><span class="n">${c.min}'</span><span>${pl(c.entra)}<br><small>por ${J(c.sale).nombre}</small></span><span></span></li>`).join('')}</ol>`:'<p class="empty">A completar</p>'}</div>
-    </div>
-  </div>
-
-  <div class="grid g2">
-    <div class="card"><h3>Puntos de San Albano</h3>
-      ${an.length?`<div class="tw" style="margin-top:8px"><table><thead><tr><th>Jugador</th><th>Tries</th><th>Conv.</th><th>Pen.</th><th>Drops</th><th>Pts</th></tr></thead><tbody>${an.map(r=>`<tr><td>${pl(r.j)}</td><td>${r.try}</td><td>${r.conv}</td><td>${r.pen}</td><td>${r.drop}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div>
-      ${m.sa!=null&&sum!==m.sa?`<p class="note" style="margin:10px 0 0"><b>Faltan asignar ${m.sa-sum} puntos.</b> Los tantos cargados suman ${sum} y el resultado es ${m.sa}.</p>`:''}`:'<p class="empty">A completar</p>'}</div>
-    <div class="card"><h3>Ficha del partido</h3><dl class="dl">
-      <dt>Capitán</dt><dd>${cap}</dd>
-      <dt>Amarillas</dt><dd>${tarj.filter(e=>e.t==='ama').map(e=>pl(e.j)).join(', ')||'<span class="empty">Sin registro</span>'}</dd>
-      <dt>Rojas</dt><dd>${tarj.filter(e=>e.t==='roja').map(e=>pl(e.j)).join(', ')||'<span class="empty">Sin registro</span>'}</dd>
-      <dt>Árbitro</dt><dd><span class="empty">A completar</span></dd>
-      <dt>Observaciones</dt><dd>${m.obs||'<span class="empty">A completar</span>'}</dd>
-      <dt>Bonus</dt><dd>${m.sa==null?'—':[m.bon[0]&&'Ofensivo para San Albano',m.bon[1]&&'Ofensivo para '+m.rival,m.sa<m.ri&&m.ri-m.sa<=7&&'Defensivo para San Albano',m.ri<m.sa&&m.sa-m.ri<=7&&'Defensivo para '+m.rival].filter(Boolean).join(' · ')||'Sin bonus'}</dd>
+  ${(()=>{const banco=ps.some(p=>p.n>15), ama=tarj.filter(e=>e.t==='ama'), roja=tarj.filter(e=>e.t==='roja'), hayCap=!cap.includes('empty');
+   const bonus=m.sa==null?'':[m.bon[0]&&'Ofensivo para San Albano',m.bon[1]&&'Ofensivo para '+m.rival,m.sa<m.ri&&m.ri-m.sa<=7&&'Defensivo para San Albano',m.ri<m.sa&&m.sa-m.ri<=7&&'Defensivo para '+m.rival].filter(Boolean).join(' · ');
+   const col2=[
+    banco?`<div class="card"><h3>Suplentes</h3><ol class="xv">${BANCO.map((p,i)=>slot(16+i,p)).join('')}</ol></div>`:'',
+    sinPos.length?`<div class="card"><h3>También jugaron</h3><p class="sub" style="margin:4px 0 6px">Según la crónica del partido.</p><div class="chips">${sinPos.map(p=>`<span>${pl(p.j)}</span>`).join(' · ')}</div></div>`:'',
+    cs.length?`<div class="card"><h3>Cambios</h3><ol class="xv">${cs.map(c=>`<li><span class="n">${c.min}'</span><span>${pl(c.entra)}<br><small>por ${J(c.sale).nombre}</small></span><span></span></li>`).join('')}</ol></div>`:'',
+    an.length?`<div class="card"><h3>Puntos de San Albano</h3><div class="tw" style="margin-top:8px"><table><thead><tr><th>Jugador</th><th>Tries</th><th>Conv.</th><th>Pen.</th><th>Drops</th><th>Pts</th></tr></thead><tbody>${an.map(r=>`<tr><td>${pl(r.j)}</td><td>${r.try}</td><td>${r.conv}</td><td>${r.pen}</td><td>${r.drop}</td><td><b>${r.pts}</b></td></tr>`).join('')}</tbody></table></div>${m.sa!=null&&sum!==m.sa?`<p class="note" style="margin:10px 0 0"><b>Faltan asignar ${m.sa-sum} puntos.</b> Los tantos cargados suman ${sum} y el resultado es ${m.sa}.</p>`:''}</div>`:'',
+    `<div class="card"><h3>Ficha del partido</h3><dl class="dl">
+      ${hayCap?`<dt>Capitanes</dt><dd>${cap}</dd>`:''}
+      ${ama.length?`<dt>Amarillas</dt><dd>${ama.map(e=>pl(e.j)).join(', ')}</dd>`:''}
+      ${roja.length?`<dt>Rojas</dt><dd>${roja.map(e=>pl(e.j)).join(', ')}</dd>`:''}
+      ${bonus?`<dt>Bonus</dt><dd>${bonus}</dd>`:''}
+      ${m.obs?`<dt>Crónica</dt><dd>${m.obs}</dd>`:''}
       <dt>Colores de ${m.rival}</dt><dd>${CLUBES[m.rid].col}</dd>
-      <dt>Fuente</dt><dd>${FORMACIONES[id]?'Formación: Instagram del club · ':''}Resultado: URBA, Fixture y Resultados${m.obs?' · Crónica: El Diario Sur / Rugby Champagne':''}</dd></dl></div>
-  </div></section>`;
+      <dt>Rival</dt><dd><a href="#rival-${m.rid}">Cómo viene ${m.rival} →</a></dd></dl></div>`].join('');
+   const tit=ps.some(p=>p.n&&p.n<=15);
+   return `<div class="grid g2"><div class="card"><h3>Titulares</h3>${tit?`<ol class="xv">${XV.map((p,i)=>slot(i+1,p)).join('')}</ol>`:`<p class="empty" style="margin:8px 0 0">${jugado(m)?'Formación no publicada.':'La formación se publica el viernes.'}</p>`}</div>
+    <div style="display:flex;flex-direction:column;gap:18px;min-width:0">${col2}</div></div>`})()}
+  </section>`;
 }
 
 const COLS=[['pj','PJ','Partidos jugados'],['tit','Tit','Titularidades'],['ptit','% Tit','Porcentaje de partidos como titular'],['ban','Banco','Ingresos desde el banco'],['min','Min','Minutos jugados'],['pts','Pts','Puntos'],['try','T','Tries'],['conv','C','Conversiones'],['pen','P','Penales'],['drop','D','Drops'],['ppp','Pts/PJ','Promedio de puntos por partido'],['tpp','T/PJ','Promedio de tries por partido'],['vic','Vic','Victorias en partidos disputados'],['racha','Racha','Fechas consecutivas jugadas'],['ama','TA','Tarjetas amarillas'],['roja','TR','Tarjetas rojas']];
@@ -834,8 +820,7 @@ function vJugador(id){
   <div class="pl-head"><span class="av big" title="Foto a cargar">${ini(j.nombre)}</span>
     <div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span class="lbl">${j.pos?(POS[j.pos][1]==='F'?'Forward':'Back'):'Plantel Superior'}${id===TEMPORADA.capitan?' · Capitán del Plantel Superior':id===TEMPORADA.subcapitan?' · Subcapitán del Plantel Superior':''}</span>
     <h2>${j.nombre}${capi(id)}</h2><span>${posN(j)}${j.alt&&j.alt.length?' · también '+j.alt.map(k=>POS[k][0].toLowerCase()).join(', '):''}</span></div></div>
-  <div><h3 class="sec">Datos personales</h3>
-    <div class="figs txt">${fig(f.camada||vac,'Camada')}${fig(edad||vac,'Edad')}${fig(f.altura||vac,'Altura')}${fig(f.peso||vac,'Peso')}${fig(j.pos?POS[j.pos][0]:vac,'Posición')}</div></div>
+  ${(()=>{const d=[[f.camada,'Camada'],[edad,'Edad'],[f.altura,'Altura'],[f.peso,'Peso']].filter(x=>x[0]);return d.length?`<div><h3 class="sec">Datos personales</h3><div class="figs txt">${d.map(x=>fig(x[0],x[1])).join('')}</div></div>`:''})()}
   <div><h3 class="sec">Temporada ${TEMPORADA.anio}</h3>
     <div class="figs">${fig(r.pj,'Partidos jugados')}${fig(r.pts,'Puntos')}${fig(r.try,'Tries')}${fig(pie,'Puntos con el pie')}${fig(`<span class="vd G">${v}</span> · <span class="vd E">${e}</span> · <span class="vd P">${d}</span>`,'Ganados · empatados · perdidos')}</div>
     <p class="sub" style="margin:8px 0 0">${Object.entries(r.eqs).map(([k,n])=>EQUIPOS[k]+': '+n).join(' · ')||'Sin partidos registrados'}${pie?` · Con el pie: ${r.conv} conversiones, ${r.pen} penales, ${r.drop} drops`:''}</p></div>
@@ -928,11 +913,12 @@ const app=document.getElementById('app');
 function render(keep){
   const h=(location.hash||'#inicio').slice(1); let v,sec=h;
   if(h.startsWith('rival-')){v=vRival(h.slice(6));sec='inicio'}
-  else if(h.startsWith('partido-')){v=vPartido(h.slice(8));sec='fixture'}
+  else if(h.startsWith('partido-')){v=vPartido(h.slice(8));sec='partidos'}
   else if(h.startsWith('jugador-')){v=vJugador(h.slice(8));sec='plantel'}
-  else v=({inicio:vInicio,competencia:vCompetencia,fixture:vFixture,partidos:vPartidos,plantel:vPlantel,formacion:vFormacion}[h]||(sec='inicio',vInicio))();
-  const BAN={competencia:['cancha','Competencia'],fixture:['cancha','Fixture '+TEMPORADA.anio],partidos:['partidos','Partidos'],estadisticas:['stats','Estadísticas'],plantel:['plantel','Plantel'],votacion:['plantel','El jugador de la fecha'],formacion:['cancha','Formación en cancha']}[h];
+  else v=({inicio:vInicio,competencia:vCompetencia,fixture:vFixture,partidos:vFixture,plantel:vPlantel,formacion:vFormacion}[h]||(sec='inicio',vInicio))();
+  const BAN={competencia:['cancha','Posiciones'],fixture:['partidos','Partidos'],partidos:['partidos','Partidos'],estadisticas:['stats','Estadísticas'],plantel:['plantel','Plantel'],votacion:['plantel','El jugador de la fecha'],formacion:['cancha','Formación en cancha']}[h];
   app.innerHTML=(BAN?`<div class="ban" style="background-image:url(data:image/webp;base64,${PH[BAN[0]]})"><div><h2>${BAN[1]}</h2></div></div>`:'')+v+`<footer>Resultados, posiciones, escudos y colores: <a href="https://urba.org.ar/fixture?year=2026">URBA, Fixture y Resultados 2026</a> y fichas de clubes, ${DATOS.actualizado?'actualizado el '+DATOS.actualizado:'al 4 de octubre de 2026'}. Formaciones: Instagram del club. Crónicas y tantos: El Diario Sur, Rugby Champagne, ESPN. Fotos: Club San Albano.</footer>`;
+  if(sec==='fixture')sec='partidos';
   document.querySelectorAll('#nav a').forEach(a=>a.getAttribute('href')==='#'+sec?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
   if(!keep)window.scrollTo(0,0);
 }
