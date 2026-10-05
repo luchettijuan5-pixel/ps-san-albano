@@ -186,6 +186,7 @@ main{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:22px 60px;
 .rvl b{font-size:1.1rem}.rv-m{display:flex;align-items:center;gap:10px;min-width:0}.rv-m>span{display:flex;flex-direction:column;min-width:0;overflow-wrap:anywhere}.rv-m small,.rv-p{color:var(--muted)}
 .rvl .num{font-size:1.3rem;white-space:nowrap}.rv-p{text-align:right;white-space:nowrap}
 @media (max-width:600px){.rvl li{grid-template-columns:minmax(0,1fr) auto 22px;row-gap:4px}.rvl b{grid-column:1/-1}.rv-p{grid-column:1/-1;text-align:left}}
+.cap{display:inline-grid;place-items:center;min-width:1.5em;height:1.5em;padding:0 .3em;border-radius:99px;background:var(--gold);color:var(--on-gold);font-size:.68em;font-weight:700;text-decoration:none;vertical-align:middle;line-height:1}.cap.vc{background:var(--navy);color:var(--hd-fg)}
 .envivo.emb{padding:14px;display:flex;flex-direction:column;gap:12px;align-items:center;background-image:none!important}.emb-v{width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden}.emb-v iframe{width:100%;height:100%;border:0;display:block}.envivo.emb .ev-foot{color:#DCE6F3}
 .sec{display:flex;align-items:center;gap:14px;margin-top:10px;font-size:1.02rem}.sec::after{content:"";flex:1;height:1px;background:var(--line)}.sec::before{content:"";width:22px;height:4px;background:var(--gold)}
 .foto{margin:0}.foto img{width:100%;display:block;border-radius:var(--r)}.foto figcaption{font-size:.85rem;color:var(--muted);font-style:italic;margin-top:6px}
@@ -326,7 +327,7 @@ footer a{color:var(--sky-ink)}
    ===================================================================== */
 // Canal del club. Los sábados de local el botón apunta a YOUTUBE + '/live', la dirección fija de YouTube que abre la transmisión en vivo del canal.
 const YOUTUBE='https://www.youtube.com/@clubsanalbano_ok';
-const TEMPORADA = {anio:2026, torneo:'URBA Primera A', club:'San Albano', cancha:'Av. Espora 4920, Burzaco', capitanPlantel:'matlob-hernan'};
+const TEMPORADA = {anio:2026, torneo:'URBA Primera A', club:'San Albano', cancha:'Av. Espora 4920, Burzaco', capitan:'irurzun-agustin',subcapitan:'mac-gaw-james'};
 const EQUIPOS = {P:'Primera', I:'Intermedia', A:'Pre A', B:'Pre B'};
 const POS = {PI:['Pilar izquierdo','F'],H:['Hooker','F'],PD:['Pilar derecho','F'],SL:['Segunda línea','F'],AL:['Ala','F'],OC:['Octavo','F'],MS:['Medio scrum','B'],AP:['Apertura','B'],CE:['Centro','B'],WI:['Wing','B'],FB:['Fullback','B']};
 const XV = ['PI','H','PD','SL','SL','AL','AL','OC','MS','AP','WI','CE','CE','WI','FB'];
@@ -585,7 +586,8 @@ const fd=m=>m.date.getDate()+' de '+MES[m.date.getMonth()];
 const ini=s=>s.split(' ').filter(w=>w.length>2||/^[A-Z]/.test(w)).map(w=>w[0]).join('').slice(0,3).toUpperCase();
 const ej='<span class="tag">Ejemplo</span>';
 const crest=(id,c='')=>`<img class="crest ${c}" src="data:image/webp;base64,${CREST[id]}" alt="">`;
-const pl=id=>{const j=J(id);return `<a href="#jugador-${id}">${j.nombre}</a>${j.demo?' '+ej:''}`};
+const capi=id=>id===TEMPORADA.capitan?' <abbr class="cap" title="Capitán">C</abbr>':id===TEMPORADA.subcapitan?' <abbr class="cap vc" title="Subcapitán">VC</abbr>':'';
+const pl=id=>{const j=J(id);return `<a href="#jugador-${id}">${j.nombre}</a>${capi(id)}${j.demo?' '+ej:''}`};
 const posN=j=>j.pos?POS[j.pos][0]:'Posición a completar';
 const estado=m=>!jugado(m)?'Próximo':m.sa==null?'Jugado · resultado a cargar':'Jugado';
 const proximo=eq=>PARTIDOS.find(m=>m.eq===eq&&!jugado(m));
@@ -612,7 +614,7 @@ let VIVO_PREV=null;
 setInterval(()=>{const v=enVivo(proxLocal());if(VIVO_PREV===null){VIVO_PREV=v;return}if(v!==VIVO_PREV&&((location.hash||'#inicio')==='#inicio'))render(true);VIVO_PREV=v},30000);
 function vInicio(){
   const nx=proximo('P'), img=(k,alt,st='')=>`<img src="data:image/webp;base64,${PH[k]}" alt="${alt}" style="${st}">`;
-  const secs=[['competencia','Competencia','Las posiciones de las cuatro divisiones y todos los resultados de la Primera A.'],['fixture','Fixture','El calendario completo de la temporada, partido por partido.'],['partidos','Partidos','Cada jornada con su formación, el resultado y la ficha del partido.'],['formacion','Formación','Las 15 camisetas en la cancha y quiénes jugaron en cada puesto.'],['plantel','Plantel','Los '+JUGADORES.length+' jugadores del Plantel Superior, por puesto o por apellido.']];
+  const secs=[['competencia','Competencia','Las posiciones de las cuatro divisiones en la Primera A.'],['fixture','Fixture','El calendario completo de la temporada, partido por partido.'],['partidos','Partidos','Cada jornada con su formación, el resultado y la ficha del partido.'],['formacion','Formación','Las 15 camisetas en la cancha y quiénes jugaron en cada puesto.'],['plantel','Plantel','Los '+JUGADORES.length+' jugadores del Plantel Superior, por puesto o por apellido.']];
   const xvCols=f=>`<div class="xvs">${Object.keys(EQUIPOS).map(q=>{const m=M[q+'-'+f],ps=parts().filter(p=>p.m===m.id&&p.n<=15).sort((a,b)=>a.n-b.n);return `<div><h4><a href="#partido-${m.id}">${EQUIPOS[q]}</a></h4>${ps.length?`<ol>${XV.map((_,i)=>{const p=ps.find(x=>x.n===i+1);return `<li><span>${i+1}</span>${p?pl(p.j):'<i class="empty">—</i>'}</li>`}).join('')}</ol>`:'<p class="empty">Sin publicar</p>'}</div>`}).join('')}</div>`;
   const ult=ultimo('P'), hayNx=nx&&Object.keys(EQUIPOS).some(q=>FORMACIONES[q+'-'+nx.fecha]);
   const tab=(k,l)=>`<button class="chip" data-k="home" data-v="${k}" aria-pressed="${S.home===k}">${l}</button>`;
@@ -667,18 +669,14 @@ function vInicio(){
 function vCompetencia(){
   const eq=S.tbEq, rows=tabla(eq), lf=S.lf||(ultimo('P')||{fecha:1}).fecha;
   const zona=r=>eq!=='P'?'':r.pos===1?'Ascenso directo':r.pos<=5?'Play-off':r.pos>=13?'Descenso':'';
-  const liga=LIGA.split('\n')[lf-1].split(':')[1].split(';').map(x=>x.split(',').map(Number));
   const chip=(k,v,l)=>`<button class="chip" data-k="${k}" data-v="${v}" aria-pressed="${S[k]===v}">${l}</button>`;
   return `<section class="view"><div class="head"><div><h2>Competencia</h2><p>${TEMPORADA.torneo} ${TEMPORADA.anio}. 14 equipos, 26 fechas, todos contra todos ida y vuelta. Posiciones oficiales de URBA tras la fecha ${(ultimo('P')||{}).fecha||''}.</p></div><a class="btn ghost" href="https://urba.org.ar/fixture?year=2026&id=2025177">Ver en URBA</a></div>
   <div class="chips" role="group" aria-label="División">${Object.entries(EQUIPOS).map(([k,v])=>chip('tbEq',k,v)).join('')}</div>
   <div class="tw"><table><thead><tr><th>Pos</th><th class="l">Equipo</th><th title="Partidos jugados">PJ</th><th>G</th><th>E</th><th>P</th><th title="Puntos a favor">PF</th><th title="Puntos en contra">PC</th><th>Dif</th><th title="Bonus ofensivo">BO</th><th title="Bonus defensivo">BD</th><th>Pts</th>${eq==='P'?'<th class="l">Zona</th>':''}</tr></thead>
   <tbody>${rows.map(r=>`<tr class="${r.c===SA?'sa':''}"><td>${r.pos}</td><td class="l"><span style="display:inline-flex;align-items:center;gap:8px">${crest(r.c,'sm')}${CLUBES[r.c].n}</span></td><td>${r.pj}</td><td>${r.g}</td><td>${r.e}</td><td>${r.p}</td><td>${r.pf}</td><td>${r.pc}</td><td>${r.pf-r.pc>0?'+':''}${r.pf-r.pc}</td><td>${r.bo}</td><td>${r.bd}</td><td><b>${r.pts}</b></td>${eq==='P'?`<td class="l">${zona(r)}</td>`:''}</tr>`).join('')}</tbody></table></div>
   <div class="grid g2">
-    <div class="card"><div class="head"><h3>Resultados de Primera A</h3><label class="sub">Fecha <select id="lf" style="font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)">${FIX.map(([f,d])=>`<option value="${f}" ${f===lf?'selected':''}>${f} · ${d.slice(8)}/${d.slice(5,7)}</option>`).join('')}</select></label></div>
-      <ul class="lg">${liga.map(([l,v,a,b,bl,bv,ok])=>`<li class="${l===SA||v===SA?'me':''}"><span class="t r">${CLUBES[l].n}${crest(l,'sm')}</span><b class="num">${ok?a+' – '+b:'vs'}</b><span class="t">${crest(v,'sm')}${CLUBES[v].n}</span></li>`).join('')}</ul></div>
-    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
     <div class="card"><h3>Puntuación</h3><dl class="dl"><dt>Victoria</dt><dd>4 puntos</dd><dt>Empate</dt><dd>2 puntos</dd><dt>Bonus ofensivo</dt><dd>+1 por 3 tries más que el rival</dd><dt>Bonus defensivo</dt><dd>+1 por perder por 7 o menos</dd></dl></div>
-    <div class="card"><h3>Ascensos y finales</h3><dl class="dl"><dt>Campeón</dt><dd>Asciende directo</dd><dt>2° a 5°</dt><dd>Play-off por el segundo ascenso</dd><dt>Semifinales</dt><dd>31 de octubre</dd><dt>Final</dt><dd>14 de noviembre</dd></dl></div></div>
+    <div class="card"><h3>Ascensos y finales</h3><dl class="dl"><dt>Campeón</dt><dd>Asciende directo</dd><dt>2° a 5°</dt><dd>Play-off por el segundo ascenso</dd><dt>Semifinales</dt><dd>31 de octubre</dd><dt>Final</dt><dd>14 de noviembre</dd></dl></div>
   </div></section>`;
 }
 
@@ -711,7 +709,7 @@ function vPartido(id){
   const sum=an.reduce((a,r)=>a+r.pts,0), tarj=es.filter(e=>e.t==='ama'||e.t==='roja');
   const home=m.loc==='L', A=home?'San Albano':m.rival, B=home?m.rival:'San Albano';
   const big=m.sa!=null?(home?`${m.sa} – ${m.ri}`:`${m.ri} – ${m.sa}`):jugado(m)?'– : –':(m.hora||'vs');
-  const cap=m.eq==='P'?`${pl(TEMPORADA.capitanPlantel)} <small class="sub">(capitán de División Superior según URBA; confirmar para este partido)</small>`:'<span class="empty">A completar</span>';
+  const enP=id=>ps.some(p=>p.j===id&&p.rol!=='N'), cap=[enP(TEMPORADA.capitan)&&pl(TEMPORADA.capitan),enP(TEMPORADA.subcapitan)&&pl(TEMPORADA.subcapitan)].filter(Boolean).join(' · ')||'<span class="empty">A completar</span>';
   return `<section class="view">
   <div class="head"><a class="btn ghost" href="#fixture">← Fixture</a><div class="chips">${Object.entries(EQUIPOS).map(([k,v])=>`<a class="chip" style="text-decoration:none" href="#partido-${k}-${m.fecha}" aria-pressed="${k===m.eq}">${v}</a>`).join('')}</div></div>
   <div class="score"><div class="score-in">
@@ -795,9 +793,10 @@ function vStats(){
 const apellido=j=>j.apellido||j.nombre.split(' ').slice(1).join(' ')||j.nombre;
 const nombrePila=j=>j.apellido?j.nombre.replace(j.apellido,'').trim():j.nombre.split(' ')[0];
 const norm=t=>t.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const id2cap=id=>id===TEMPORADA.capitan?' · Capitán':id===TEMPORADA.subcapitan?' · Subcapitán':'';
 function plBody(){
   const q=norm(S.plQ.trim()); let js=jugadores().filter(j=>(!S.plPos||j.pos===S.plPos)&&(!q||norm(apellido(j)).includes(q)||norm(j.nombre).includes(q)));
-  const card=j=>`<a class="pc" href="#jugador-${j.id}"><span class="av">${j.demo?'?':ini(j.nombre)}</span><span><b>${j.demo?j.nombre:apellido(j)+', '+nombrePila(j)}</b><small>${j.demo?'Ejemplo · ':''}${posN(j)}</small></span></a>`;
+  const card=j=>`<a class="pc" href="#jugador-${j.id}"><span class="av">${j.demo?'?':ini(j.nombre)}</span><span><b>${j.demo?j.nombre:apellido(j)+', '+nombrePila(j)}</b><small>${j.demo?'Ejemplo · ':''}${posN(j)}${id2cap(j.id)}</small></span></a>`;
   if(!js.length)return '<p class="empty">Ningún jugador coincide con la búsqueda.</p>';
   if(S.plV==='abc'){
     js=js.slice().sort((a,b)=>(a.demo?1:0)-(b.demo?1:0)||norm(apellido(a)).localeCompare(norm(apellido(b)))||a.nombre.localeCompare(b.nombre));
@@ -833,8 +832,8 @@ function vJugador(id){
   const ms=r.ms.slice().sort((a,b)=>b.m.date-a.m.date), v=ms.filter(x=>letra(x.m)==='G').length, d=ms.filter(x=>letra(x.m)==='P').length, e=ms.filter(x=>letra(x.m)==='E').length;
   return `<section class="view"><div><a class="btn ghost" href="#plantel">← Plantel</a></div>
   <div class="pl-head"><span class="av big" title="Foto a cargar">${ini(j.nombre)}</span>
-    <div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span class="lbl">${j.pos?(POS[j.pos][1]==='F'?'Forward':'Back'):'Plantel Superior'}${id===TEMPORADA.capitanPlantel?' · Capitán de División Superior':''}</span>
-    <h2>${j.nombre}</h2><span>${posN(j)}${j.alt&&j.alt.length?' · también '+j.alt.map(k=>POS[k][0].toLowerCase()).join(', '):''}</span></div></div>
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0"><span class="lbl">${j.pos?(POS[j.pos][1]==='F'?'Forward':'Back'):'Plantel Superior'}${id===TEMPORADA.capitan?' · Capitán del Plantel Superior':id===TEMPORADA.subcapitan?' · Subcapitán del Plantel Superior':''}</span>
+    <h2>${j.nombre}${capi(id)}</h2><span>${posN(j)}${j.alt&&j.alt.length?' · también '+j.alt.map(k=>POS[k][0].toLowerCase()).join(', '):''}</span></div></div>
   <div><h3 class="sec">Datos personales</h3>
     <div class="figs txt">${fig(f.camada||vac,'Camada')}${fig(edad||vac,'Edad')}${fig(f.altura||vac,'Altura')}${fig(f.peso||vac,'Peso')}${fig(j.pos?POS[j.pos][0]:vac,'Posición')}</div></div>
   <div><h3 class="sec">Temporada ${TEMPORADA.anio}</h3>
@@ -859,7 +858,7 @@ function rankCamiseta(n,eq){
 }
 function vFormacion(){
   const n=S.cam, eq=S.fEq, pos=XV[n-1], rk=rankCamiseta(n,eq);
-  const cam=k=>{const top=rankCamiseta(+k,eq)[0];return `<button class="cam" data-cam="${k}" aria-pressed="${+k===n}" style="left:${CANCHA[k][0]}%;top:${CANCHA[k][1]}%" title="${k} · ${POS[XV[k-1]][0]}"><b>${k}</b><span>${top?apellido(J(top.id)):'—'}</span></button>`};
+  const cam=k=>{const top=rankCamiseta(+k,eq)[0];return `<button class="cam" data-cam="${k}" aria-pressed="${+k===n}" style="left:${CANCHA[k][0]}%;top:${CANCHA[k][1]}%" title="${k} · ${POS[XV[k-1]][0]}"><b>${k}</b><span>${top?apellido(J(top.id))+(top.id===TEMPORADA.capitan?' (C)':top.id===TEMPORADA.subcapitan?' (VC)':''):'—'}</span></button>`};
   const chip=(k,l)=>`<button class="chip" data-k="fEq" data-v="${k}" aria-pressed="${eq===k}">${l}</button>`;
   return `<section class="view"><div class="head"><div><h2>Formación</h2><p>El equipo que más se repitió en ${EQUIPOS[eq]}: debajo de cada número figura quien más veces usó esa camiseta. Tocá una camiseta para ver todas las alternativas del puesto.</p></div></div>
   <div class="chips" role="group" aria-label="Equipo">${Object.entries(EQUIPOS).map(([k,v])=>chip(k,v)).join('')}</div>
