@@ -19,6 +19,7 @@
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
+<script src="datos.js"></script>
 <style>
 /* Layout: barra superior fija azul + vistas tipo "match centre"; las franjas de la camiseta (amarillo, celeste, azul) son el único ornamento. */
 :root{
@@ -179,6 +180,7 @@ main{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:22px 60px;
 .ev-in{min-height:260px}
 .hero{position:relative}.hero-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:transparent}.hero-txt{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.hero-v{display:none}}
+.envivo.emb{padding:14px;display:flex;flex-direction:column;gap:12px;align-items:center;background-image:none!important}.emb-v{width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden}.emb-v iframe{width:100%;height:100%;border:0;display:block}.envivo.emb .ev-foot{color:#DCE6F3}
 .sec{display:flex;align-items:center;gap:14px;margin-top:10px;font-size:1.02rem}.sec::after{content:"";flex:1;height:1px;background:var(--line)}.sec::before{content:"";width:22px;height:4px;background:var(--gold)}
 .foto{margin:0}.foto img{width:100%;display:block;border-radius:var(--r)}.foto figcaption{font-size:.85rem;color:var(--muted);font-style:italic;margin-top:6px}
 .kpi .num{font-size:2.6rem;line-height:1}
@@ -328,9 +330,10 @@ const BANCO = ['H','PI','PD','SL','AL','MS','AP','WI'];
 const SA=14;
 const CLUBES={"5":{"n":"San Luis","col":"Camiseta azul y roja con puños y cuello blancos. Pantalón blanco. Medias rojas."},"14":{"n":"San Albano","col":"Camiseta a franjas horizontales amarillo, celeste y azul. Pantalón blanco. Medias azules."},"15":{"n":"Lomas Athletic","col":"Franjas horizontales verde, roja y amarilla con cuello blanco. Pantalón blanco. Medias verdes con vivos rojos y amarillos."},"16":{"n":"Pucará","col":"Camiseta roja escarlata con cuello azul. Pantalón azul. Medias azules con puño rojo escarlata."},"17":{"n":"Deportiva Francesa","col":"Camiseta azul y roja, cuello y puños blancos. Pantalón blanco. Medias azules con vivos rojos."},"18":{"n":"San Cirano","col":"Camiseta a rayas horizontales azules y verdes. Pantalón blanco. Medias verdes."},"19":{"n":"Hurling","col":"Camiseta verde con cuello y puños blancos. Pantalón blanco. Medias verdes con puño blanco."},"22":{"n":"Olivos","col":"Camiseta naranja y negra a franjas horizontales. Pantalón blanco. Medias negras con vivos naranjas."},"24":{"n":"Curupaytí","col":"Camiseta azul marino y rojo sangre a franjas horizontales. Pantalón blanco. Medias a franjas azul marino y rojo sangre."},"25":{"n":"Pueyrredón","col":"Camiseta blanca. Pantalón azul. Medias rojas."},"29":{"n":"Universitario de La Plata","col":"Camiseta negra con puños y cuello blancos. Pantalón blanco. Medias negras con puños blancos."},"30":{"n":"Gimnasia y Esgrima","col":"Camiseta blanca con franja horizontal celeste. Pantalón blanco. Medias azules con puño blanco."},"31":{"n":"San Andrés","col":"Camiseta azul marino con cuello y puños blancos. Pantalón blanco. Medias azul marino con puño blanco."},"32":{"n":"San Fernando","col":"Camiseta blanca con rayas horizontales azules y verdes. Pantalón azul. Medias azules."}};
 // Resultados de San Albano por división: L/V + id rival : SA-rival (b = bonus ofensivo SA, r = del rival, x = sin jugar)
-const SRES={"P":"V30:18-34 L22:15-17 V5:10-55r L24:31-39 V15:17-27r L19:29-47r V31:21-38r L29:28-23 V25:30-22 L32:29-27 V17:16-20 L18:27-31 V16:24-32 L30:23-27 V22:28-27 L5:13-54r V24:26-31 L15:20-29 V19:26-43r L31:34-37 V29:32-24 L25:19-24 V32:3-19 L17:x V18:x L16:x","I":"V30:27-45r L22:22-24 V5:29-34 L24:34-31 V15:15-42r L19:28-49r V31:29-31 L29:27-15 V25:36-66r L32:22-37 V17:35-60r L18:27-49r V16:7-73r L30:27-60r V22:29-35 L5:7-66r V24:26-47r L15:19-43r V19:19-61r L31:35-36 V29:26-28 L25:19-26 V32:27-27 L17:x V18:x L16:x","A":"V30:27-34 L22:38-38 V5:10-31r L24:34-34 V15:15-29 L19:12-31 V31:26-31 L29:60-0b V25:26-59r L32:33-61r V17:12-26 L18:19-69r V16:24-55r L30:42-19b V22:10-57r L5:12-83r V24:7-43r L15:23-53r V19:24-69r L31:8-28r V29:15-38r L25:38-29 V32:36-38 L17:x V18:x L16:x","B":"V30:17-22 L22:14-34r V5:19-29 L24:32-52r V15:36-40 L19:15-35r V31:20-28 L29:47-12b V25:19-102r L32:5-19 V17:8-74r L18:12-74r V16:7-88r L30:26-31 V22:17-47r L5:0-126r V24:27-47r L15:31-24 V19:38-40 L31:14-75r V29:26-29 L25:7-73r V32:34-31 L17:x V18:x L16:x"};
+const DATOS=window.DATOS||{};
+const SRES=DATOS.SRES||{"P":"V30:18-34 L22:15-17 V5:10-55r L24:31-39 V15:17-27r L19:29-47r V31:21-38r L29:28-23 V25:30-22 L32:29-27 V17:16-20 L18:27-31 V16:24-32 L30:23-27 V22:28-27 L5:13-54r V24:26-31 L15:20-29 V19:26-43r L31:34-37 V29:32-24 L25:19-24 V32:3-19 L17:x V18:x L16:x","I":"V30:27-45r L22:22-24 V5:29-34 L24:34-31 V15:15-42r L19:28-49r V31:29-31 L29:27-15 V25:36-66r L32:22-37 V17:35-60r L18:27-49r V16:7-73r L30:27-60r V22:29-35 L5:7-66r V24:26-47r L15:19-43r V19:19-61r L31:35-36 V29:26-28 L25:19-26 V32:27-27 L17:x V18:x L16:x","A":"V30:27-34 L22:38-38 V5:10-31r L24:34-34 V15:15-29 L19:12-31 V31:26-31 L29:60-0b V25:26-59r L32:33-61r V17:12-26 L18:19-69r V16:24-55r L30:42-19b V22:10-57r L5:12-83r V24:7-43r L15:23-53r V19:24-69r L31:8-28r V29:15-38r L25:38-29 V32:36-38 L17:x V18:x L16:x","B":"V30:17-22 L22:14-34r V5:19-29 L24:32-52r V15:36-40 L19:15-35r V31:20-28 L29:47-12b V25:19-102r L32:5-19 V17:8-74r L18:12-74r V16:7-88r L30:26-31 V22:17-47r L5:0-126r V24:27-47r L15:31-24 V19:38-40 L31:14-75r V29:26-29 L25:7-73r V32:34-31 L17:x V18:x L16:x"};
 // Todas las fechas de Primera A: fecha@día:local,visitante,pts local,pts visitante,bonus local,bonus visitante,jugado,suspendido
-const LIGA=`1@2026-03-14:16,31,30,27,0,0,1,0;19,29,41,20,1,0,1,0;15,25,32,29,0,0,1,0;24,32,36,27,0,0,1,0;5,17,39,31,0,0,1,0;22,18,22,45,0,1,1,0;30,14,34,18,0,0,1,0
+const LIGA=DATOS.LIGA||`1@2026-03-14:16,31,30,27,0,0,1,0;19,29,41,20,1,0,1,0;15,25,32,29,0,0,1,0;24,32,36,27,0,0,1,0;5,17,39,31,0,0,1,0;22,18,22,45,0,1,1,0;30,14,34,18,0,0,1,0
 2@2026-03-21:30,16,26,21,0,0,1,0;14,22,15,17,0,0,1,0;18,5,45,25,1,0,1,0;17,24,24,42,0,0,1,0;32,15,33,0,1,0,1,0;25,19,13,33,0,1,1,0;29,31,15,18,0,0,1,0
 3@2026-03-28:16,29,31,23,0,0,1,0;31,25,28,10,0,0,1,0;19,32,23,36,0,0,1,0;15,17,34,18,1,0,1,0;24,18,39,46,0,0,1,0;5,14,55,10,1,0,1,0;22,30,18,31,0,0,1,0
 4@2026-04-11:22,16,17,45,0,1,1,0;30,5,29,27,0,0,1,0;14,24,31,39,0,0,1,0;18,15,12,16,0,0,1,0;17,19,29,48,0,1,1,0;32,31,40,11,1,0,1,0;25,29,34,31,0,0,1,0
@@ -357,7 +360,7 @@ const LIGA=`1@2026-03-14:16,31,30,27,0,0,1,0;19,29,41,20,1,0,1,0;15,25,32,29,0,0
 25@2026-10-17:16,19,0,0,0,0,0,0;31,15,0,0,0,0,0,0;29,24,0,0,0,0,0,0;25,5,0,0,0,0,0,0;32,22,0,0,0,0,0,0;17,30,0,0,0,0,0,0;18,14,0,0,0,0,0,0
 26@2026-10-24:14,16,0,0,0,0,0,0;30,18,0,0,0,0,0,0;22,17,0,0,0,0,0,0;5,32,0,0,0,0,0,0;24,25,0,0,0,0,0,0;15,29,0,0,0,0,0,0;19,31,0,0,0,0,0,0`;
 // Posiciones: club,pos,PJ,G,E,P,PF,PC,BO,BD,Pts
-const TABLAS={"P":"5,1,23,20,0,3,873,466,13,2,95|18,2,23,19,0,4,696,607,5,2,83|15,3,23,15,1,7,623,474,9,4,75|24,4,23,16,1,6,749,633,2,3,71|32,5,23,14,1,8,659,493,6,5,69|16,6,23,12,0,11,698,696,5,4,57|30,7,23,13,0,10,610,620,2,1,55|31,8,23,11,0,12,632,687,2,7,53|19,9,23,10,1,12,693,717,6,4,52|25,10,23,6,3,14,661,761,3,7,40|22,11,23,7,1,15,583,739,1,5,36|17,12,23,5,1,17,617,787,0,7,29|14,13,23,5,0,18,519,727,0,7,27|29,14,23,3,1,19,556,762,1,9,24","I":"16,1,23,19,0,4,1052,421,16,3,95|5,2,23,18,0,5,849,445,12,4,88|15,3,23,19,1,3,740,524,9,1,88|19,4,23,15,0,8,786,603,10,2,72|25,5,23,14,1,8,767,567,8,5,71|24,6,23,15,0,8,733,586,7,4,71|18,7,23,14,0,9,687,589,8,6,70|30,8,23,8,1,14,615,653,2,7,43|32,9,23,8,1,14,547,789,1,1,36|17,10,23,7,0,16,579,722,2,5,35|22,11,23,7,1,15,516,803,0,5,35|31,12,23,8,0,15,529,808,0,0,32|29,13,23,4,0,19,419,896,1,2,19|14,14,23,2,1,20,572,985,0,7,17","A":"5,1,23,22,0,1,979,374,17,0,105|16,2,23,18,1,4,904,436,13,3,90|18,3,23,17,1,5,803,526,9,3,82|25,4,23,14,0,9,791,543,8,1,65|24,5,23,13,1,9,677,563,5,4,63|15,6,23,12,2,9,687,603,6,5,63|22,7,23,10,1,12,910,706,7,6,55|17,8,23,11,0,12,663,737,4,2,50|30,9,23,10,0,13,603,647,4,4,48|19,10,23,9,0,14,712,661,6,5,47|32,11,23,9,0,14,571,920,3,0,39|31,12,23,6,1,16,602,836,2,5,33|14,13,23,3,2,18,551,955,2,3,21|29,14,23,2,1,20,312,1258,1,1,12","B":"5,1,23,23,0,0,1053,370,15,0,107|16,2,23,19,0,4,1069,396,12,3,91|22,3,23,16,1,6,910,500,12,4,82|24,4,23,18,0,5,733,521,6,2,80|25,5,23,14,0,9,884,476,10,6,72|18,6,23,12,2,9,736,543,7,5,64|30,7,23,12,1,10,691,620,3,1,54|19,8,23,10,0,13,683,686,6,4,50|17,9,23,10,0,13,747,752,4,2,46|15,10,23,9,0,14,557,768,2,5,43|32,11,23,6,1,16,544,684,3,5,34|31,12,23,4,1,18,579,799,3,6,27|14,13,23,3,0,20,471,1132,1,5,18|29,14,23,2,0,21,173,1583,0,0,8"};
+const TABLAS=DATOS.TABLAS||{"P":"5,1,23,20,0,3,873,466,13,2,95|18,2,23,19,0,4,696,607,5,2,83|15,3,23,15,1,7,623,474,9,4,75|24,4,23,16,1,6,749,633,2,3,71|32,5,23,14,1,8,659,493,6,5,69|16,6,23,12,0,11,698,696,5,4,57|30,7,23,13,0,10,610,620,2,1,55|31,8,23,11,0,12,632,687,2,7,53|19,9,23,10,1,12,693,717,6,4,52|25,10,23,6,3,14,661,761,3,7,40|22,11,23,7,1,15,583,739,1,5,36|17,12,23,5,1,17,617,787,0,7,29|14,13,23,5,0,18,519,727,0,7,27|29,14,23,3,1,19,556,762,1,9,24","I":"16,1,23,19,0,4,1052,421,16,3,95|5,2,23,18,0,5,849,445,12,4,88|15,3,23,19,1,3,740,524,9,1,88|19,4,23,15,0,8,786,603,10,2,72|25,5,23,14,1,8,767,567,8,5,71|24,6,23,15,0,8,733,586,7,4,71|18,7,23,14,0,9,687,589,8,6,70|30,8,23,8,1,14,615,653,2,7,43|32,9,23,8,1,14,547,789,1,1,36|17,10,23,7,0,16,579,722,2,5,35|22,11,23,7,1,15,516,803,0,5,35|31,12,23,8,0,15,529,808,0,0,32|29,13,23,4,0,19,419,896,1,2,19|14,14,23,2,1,20,572,985,0,7,17","A":"5,1,23,22,0,1,979,374,17,0,105|16,2,23,18,1,4,904,436,13,3,90|18,3,23,17,1,5,803,526,9,3,82|25,4,23,14,0,9,791,543,8,1,65|24,5,23,13,1,9,677,563,5,4,63|15,6,23,12,2,9,687,603,6,5,63|22,7,23,10,1,12,910,706,7,6,55|17,8,23,11,0,12,663,737,4,2,50|30,9,23,10,0,13,603,647,4,4,48|19,10,23,9,0,14,712,661,6,5,47|32,11,23,9,0,14,571,920,3,0,39|31,12,23,6,1,16,602,836,2,5,33|14,13,23,3,2,18,551,955,2,3,21|29,14,23,2,1,20,312,1258,1,1,12","B":"5,1,23,23,0,0,1053,370,15,0,107|16,2,23,19,0,4,1069,396,12,3,91|22,3,23,16,1,6,910,500,12,4,82|24,4,23,18,0,5,733,521,6,2,80|25,5,23,14,0,9,884,476,10,6,72|18,6,23,12,2,9,736,543,7,5,64|30,7,23,12,1,10,691,620,3,1,54|19,8,23,10,0,13,683,686,6,4,50|17,9,23,10,0,13,747,752,4,2,46|15,10,23,9,0,14,557,768,2,5,43|32,11,23,6,1,16,544,684,3,5,34|31,12,23,4,1,18,579,799,3,6,27|14,13,23,3,0,20,471,1132,1,5,18|29,14,23,2,0,21,173,1583,0,0,8"};
 const DIAS=LIGA.split('\n').map(l=>l.split(':')[0].split('@')[1]);
 const FIX=SRES.P.split(' ').map((s,i)=>[i+1,DIAS[i],CLUBES[+s.slice(1).split(':')[0]].n,s[0],+s.slice(1).split(':')[0]]);
 const H14 = [13,14,15,19]; // fechas a las 14:00 (juegan Los Pumas)
@@ -508,7 +511,7 @@ for (const eq of Object.keys(EQUIPOS)) for (const [f,d,rival,loc,rid] of FIX){
     hora:eq==='P'?(H14.includes(f)?'14:00':'15:30'):null,...x};
   M[id]=m; PARTIDOS.push(m);
 }
-const jugado=m=>m.date<HOY;
+const jugado=m=>m.date<HOY||m.sa!=null; // jugado: pasó la fecha o ya tiene resultado cargado
 const letra=m=>m.sa==null?'X':m.sa>m.ri?'G':m.sa<m.ri?'P':'E';
 const PTS={try:5,conv:2,pen:3,drop:3};
 
@@ -542,7 +545,7 @@ const DEMO=(()=>{
 })();
 
 /* ===================== Estado ===================== */
-const S={cam:1,home:'club',votF:0,plQ:'',plPos:'',plV:'pos',demo:true,tbEq:'P',lf:23,fxEq:'P',fxSt:'',sort:'pts',dir:-1,f:{eq:'',pos:'',q:'',desde:'',hasta:'',cond:''}};
+const S={cam:1,home:'club',votF:0,plQ:'',plPos:'',plV:'pos',demo:true,tbEq:'P',lf:0,fxEq:'P',fxSt:'',sort:'pts',dir:-1,f:{eq:'',pos:'',q:'',desde:'',hasta:'',cond:''}};
 try{const v=localStorage.getItem('sa-demo');if(v!=null)S.demo=v==='1'}catch(e){}
 S.demo=false; // todas las fechas jugadas tienen formación real: se retiran las fichas de ejemplo
 const jugadores=()=>S.demo?JUGADORES.concat(DEMO.jug):JUGADORES;
@@ -596,7 +599,8 @@ function fxRow(m,next){
 
 /* ===================== Vistas ===================== */
 // La página no puede consultar a YouTube: toma como "en vivo" los sábados de local de 10:00 a 19:00, para cubrir también Intermedia y las Pre.
-function enVivo(m){ if(!m)return false; const t=Date.now(); return t>=new Date(m.dia+'T10:00:00')&&t<=new Date(m.dia+'T19:00:00') }
+const enHoy=m=>m.date.toDateString()===new Date().toDateString();
+function enVivo(m){ if('vivo' in DATOS)return !!DATOS.vivo; if(!m)return false; const t=Date.now(); return t>=new Date(m.dia+'T10:00:00')&&t<=new Date(m.dia+'T19:00:00') }
 const proxLocal=()=>PARTIDOS.find(m=>m.eq==='P'&&!jugado(m)&&m.loc==='L');
 let VIVO_PREV=null;
 setInterval(()=>{const v=enVivo(proxLocal());if(VIVO_PREV===null){VIVO_PREV=v;return}if(v!==VIVO_PREV&&((location.hash||'#inicio')==='#inicio'))render(true);VIVO_PREV=v},30000);
@@ -613,8 +617,9 @@ function vInicio(){
     <span class="ev-in"><span class="ev-badge"><i></i>${VIVO?'En vivo · Fecha '+nh.fecha:'Transmisión en vivo · Se habilita el sábado '+fd(nh)+(nx&&nx.id!==nh.id?' · Antes jugamos de visitante en '+nx.rival:'')}</span>
       <span class="ev-teams"><span>${crest(SA,'lg')}San Albano</span><span class="play big" aria-hidden="true"></span><span>${crest(nh.rid,'lg')}${nh.rival}</span></span>
       <span class="ev-foot">${VIVO?`Hoy en Corimayo · Primera a las ${nh.hora} · Tocá para verlo en YouTube`:`Sábado ${fd(nh)}, ${nh.hora} · Corimayo · Se enciende cuando empieza la transmisión${nx&&nx.id!==nh.id?`<br>Antes, el sábado ${fd(nx)}, jugamos de visitante en ${nx.rival}.`:''}`}</span></span></a>`:'';
+  const EMBED=DATOS.vivo?`<div class="envivo emb"><span class="ev-badge"><i></i>En vivo${nh&&enHoy(nh)?' · Fecha '+nh.fecha+' · San Albano vs '+nh.rival:''}</span><div class="emb-v"><iframe src="https://www.youtube.com/embed/${DATOS.vivo}?autoplay=1&mute=1&playsinline=1" title="Transmisión en vivo del Club San Albano" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><a class="ev-foot" href="https://www.youtube.com/watch?v=${DATOS.vivo}" target="_blank" rel="noopener">Abrir en YouTube →</a></div>`:'';
   return `<section class="view home">
-  ${VIVO?PANEL:''}
+  ${VIVO?(EMBED||PANEL):''}
   <div class="hero" style="background-image:url(data:image/webp;base64,${PH.hero})"><video class="hero-v" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1"><source src="portada.mp4" type="video/mp4"><source src="portada.webm" type="video/webm"></video><div class="hero-txt">
     <div class="hero-id"><img src="data:image/webp;base64,${CREST[SA]}" alt="Escudo de San Albano" width="76" height="85" style="flex:none"><h1>San Albano Rugby<span>Plantel Superior</span></h1></div>
     <p>Corimayo, Burzaco · desde 1923</p>
@@ -650,11 +655,11 @@ function vInicio(){
 }
 
 function vCompetencia(){
-  const eq=S.tbEq, rows=tabla(eq), lf=S.lf;
+  const eq=S.tbEq, rows=tabla(eq), lf=S.lf||(ultimo('P')||{fecha:1}).fecha;
   const zona=r=>eq!=='P'?'':r.pos===1?'Ascenso directo':r.pos<=5?'Play-off':r.pos>=13?'Descenso':'';
   const liga=LIGA.split('\n')[lf-1].split(':')[1].split(';').map(x=>x.split(',').map(Number));
   const chip=(k,v,l)=>`<button class="chip" data-k="${k}" data-v="${v}" aria-pressed="${S[k]===v}">${l}</button>`;
-  return `<section class="view"><div class="head"><div><h2>Competencia</h2><p>${TEMPORADA.torneo} ${TEMPORADA.anio}. 14 equipos, 26 fechas, todos contra todos ida y vuelta. Posiciones oficiales de URBA tras la fecha 23.</p></div><a class="btn ghost" href="https://urba.org.ar/fixture?year=2026&id=2025177">Ver en URBA</a></div>
+  return `<section class="view"><div class="head"><div><h2>Competencia</h2><p>${TEMPORADA.torneo} ${TEMPORADA.anio}. 14 equipos, 26 fechas, todos contra todos ida y vuelta. Posiciones oficiales de URBA tras la fecha ${(ultimo('P')||{}).fecha||''}.</p></div><a class="btn ghost" href="https://urba.org.ar/fixture?year=2026&id=2025177">Ver en URBA</a></div>
   <div class="chips" role="group" aria-label="División">${Object.entries(EQUIPOS).map(([k,v])=>chip('tbEq',k,v)).join('')}</div>
   <div class="tw"><table><thead><tr><th>Pos</th><th class="l">Equipo</th><th title="Partidos jugados">PJ</th><th>G</th><th>E</th><th>P</th><th title="Puntos a favor">PF</th><th title="Puntos en contra">PC</th><th>Dif</th><th title="Bonus ofensivo">BO</th><th title="Bonus defensivo">BD</th><th>Pts</th>${eq==='P'?'<th class="l">Zona</th>':''}</tr></thead>
   <tbody>${rows.map(r=>`<tr class="${r.c===SA?'sa':''}"><td>${r.pos}</td><td class="l"><span style="display:inline-flex;align-items:center;gap:8px">${crest(r.c,'sm')}${CLUBES[r.c].n}</span></td><td>${r.pj}</td><td>${r.g}</td><td>${r.e}</td><td>${r.p}</td><td>${r.pf}</td><td>${r.pc}</td><td>${r.pf-r.pc>0?'+':''}${r.pf-r.pc}</td><td>${r.bo}</td><td>${r.bd}</td><td><b>${r.pts}</b></td>${eq==='P'?`<td class="l">${zona(r)}</td>`:''}</tr>`).join('')}</tbody></table></div>
@@ -891,7 +896,7 @@ function render(keep){
   else if(h.startsWith('jugador-')){v=vJugador(h.slice(8));sec='plantel'}
   else v=({inicio:vInicio,competencia:vCompetencia,fixture:vFixture,partidos:vPartidos,plantel:vPlantel,formacion:vFormacion}[h]||(sec='inicio',vInicio))();
   const BAN={competencia:['cancha','Competencia'],fixture:['cancha','Fixture '+TEMPORADA.anio],partidos:['partidos','Partidos'],estadisticas:['stats','Estadísticas'],plantel:['plantel','Plantel'],votacion:['plantel','El jugador de la fecha'],formacion:['cancha','Formación en cancha']}[h];
-  app.innerHTML=(BAN?`<div class="ban" style="background-image:url(data:image/webp;base64,${PH[BAN[0]]})"><div><h2>${BAN[1]}</h2></div></div>`:'')+v+`<footer>Resultados, posiciones, escudos y colores: <a href="https://urba.org.ar/fixture?year=2026">URBA, Fixture y Resultados 2026</a> y fichas de clubes, al 4 de octubre de 2026 (fecha 23). Formaciones: Instagram del club. Crónicas y tantos: El Diario Sur, Rugby Champagne, ESPN. Fotos: Club San Albano.</footer>`;
+  app.innerHTML=(BAN?`<div class="ban" style="background-image:url(data:image/webp;base64,${PH[BAN[0]]})"><div><h2>${BAN[1]}</h2></div></div>`:'')+v+`<footer>Resultados, posiciones, escudos y colores: <a href="https://urba.org.ar/fixture?year=2026">URBA, Fixture y Resultados 2026</a> y fichas de clubes, ${DATOS.actualizado?'actualizado el '+DATOS.actualizado:'al 4 de octubre de 2026'}. Formaciones: Instagram del club. Crónicas y tantos: El Diario Sur, Rugby Champagne, ESPN. Fotos: Club San Albano.</footer>`;
   document.querySelectorAll('#nav a').forEach(a=>a.getAttribute('href')==='#'+sec?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current'));
   if(!keep)window.scrollTo(0,0);
 }
@@ -934,6 +939,8 @@ document.getElementById('bc').src='data:image/webp;base64,'+CREST[SA];render();V
    if(ios)pasos(['Abrí esta página en <b>Safari</b>.','Tocá el botón <b>Compartir</b> (el cuadrado con la flecha hacia arriba).','Elegí <b>Agregar a inicio</b>.','Confirmá con <b>Agregar</b>. El ícono aparece como "PS - San Albano".']);
    else pasos(['Abrí el menú del navegador (los <b>tres puntos</b> arriba a la derecha).','Tocá <b>Instalar aplicación</b> o <b>Agregar a pantalla principal</b>.','Confirmá con <b>Instalar</b>.']) });
  document.getElementById('inst-x').addEventListener('click',()=>{el.hidden=true;try{localStorage.setItem('inst-x','1')}catch(e){}});
+ // vuelve a leer datos.js cada 2 minutos: si cambió (resultado nuevo o empezó el vivo), recarga la vista
+ setInterval(()=>{const s=document.createElement('script'),antes=JSON.stringify(window.DATOS);s.src='datos.js?t='+Date.now();s.onload=()=>{s.remove();if(JSON.stringify(window.DATOS)!==antes)location.reload()};s.onerror=()=>s.remove();document.head.appendChild(s)},120000);
  if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 })();
 </script>

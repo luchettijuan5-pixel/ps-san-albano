@@ -1,0 +1,30 @@
+name: Actualizar resultados, posiciones y vivo
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # cada 10 minutos (GitHub puede demorar unos minutos más)
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: actualizar
+  cancel-in-progress: false
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node scripts/actualizar.mjs
+      - name: Publicar si hubo cambios
+        run: |
+          if [ -n "$(git status --porcelain datos.js)" ]; then
+            git config user.name "Actualización automática"
+            git config user.email "actions@users.noreply.github.com"
+            git add datos.js
+            git commit -m "Datos actualizados desde URBA y YouTube"
+            git pull --rebase -q origin main
+            git push
+          fi
