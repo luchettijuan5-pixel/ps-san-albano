@@ -525,6 +525,8 @@ const DUDAS=[];
  for(let k=PARTICIPACIONES.length-1;k>=0;k--){const p=PARTICIPACIONES[k];if(p.rol==='?'&&porM[p.m]&&porM[p.m].has(p.j))PARTICIPACIONES.splice(k,1)}
  for(const j of JUGADORES)if(j.pc){const o=Object.entries(j.pc).sort((a,b)=>b[1]-a[1]);j.pos=o[0][0];j.alt=o.slice(1).map(x=>x[0])}
 })();
+// Quien anotó en un partido lo jugó: si no figura en la placa de titulares, entró desde el banco.
+{const k=new Set(PARTICIPACIONES.map(p=>p.m+'|'+p.j));for(const e of EVENTOS)if(!k.has(e.m+'|'+e.j)){k.add(e.m+'|'+e.j);PARTICIPACIONES.push({m:e.m,j:e.j,rol:'S',min:null})}}
 const CAMBIOS = [];
 
 /* ===================== Modelo ===================== */
