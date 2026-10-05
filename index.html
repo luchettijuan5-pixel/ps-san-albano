@@ -141,6 +141,8 @@ main{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:22px 60px;
 .pitch::after{content:"";position:absolute;left:0;right:0;top:60%;border-top:2px dashed rgba(255,255,255,.4)}
 .cam{position:absolute;transform:translate(-50%,-50%);z-index:1;background:none;border:0;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--f-display);width:74px}
 .cam b{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;font-size:1.25rem;color:#fff;text-shadow:0 1px 3px #000,0 0 2px #000;background:linear-gradient(to bottom,#F5C400 0 33.3%,#5BB3E6 33.3% 66.6%,#0B2A55 66.6%);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.4);transition:transform .15s}
+.cam b.ft{position:relative;background:#E9F0F8}.cam b.ft img{position:absolute;inset:0;width:100%;height:100%;max-width:none;border-radius:50%;object-fit:cover;object-position:50% 6%;display:block}
+.cam b.ft i{position:absolute;right:-7px;bottom:-5px;min-width:18px;height:18px;padding:0 3px;border-radius:9px;background:#0B2A55;border:1.5px solid #fff;color:#fff;font:700 .68rem/15px var(--f-display);text-shadow:none;text-align:center;box-sizing:border-box}
 .cam span{font-size:.72rem;line-height:1.05;color:#fff;text-shadow:0 1px 2px #000;text-align:center;overflow-wrap:anywhere;font-weight:700}
 .cam:hover b{transform:scale(1.1)}.cam[aria-pressed="true"] b{border-color:#F5C400;box-shadow:0 0 0 4px #F5C400,0 2px 6px rgba(0,0,0,.5);transform:scale(1.12)}
 .cam:focus-visible{outline:none}.cam:focus-visible b{box-shadow:0 0 0 4px #fff}
@@ -845,7 +847,7 @@ function rankCamiseta(n,eq){
 }
 function vFormacion(){
   const n=S.cam, eq=S.fEq, pos=XV[n-1], rk=rankCamiseta(n,eq);
-  const cam=k=>{const top=rankCamiseta(+k,eq)[0];return `<button class="cam" data-cam="${k}" aria-pressed="${+k===n}" style="left:${CANCHA[k][0]}%;top:${CANCHA[k][1]}%" title="${k} · ${POS[XV[k-1]][0]}"><b>${k}</b><span>${top?apellido(J(top.id))+(top.id===TEMPORADA.capitan?' (C)':top.id===TEMPORADA.subcapitan?' (VC)':''):'—'}</span></button>`};
+  const cam=k=>{const top=rankCamiseta(+k,eq)[0];return `<button class="cam" data-cam="${k}" aria-pressed="${+k===n}" style="left:${CANCHA[k][0]}%;top:${CANCHA[k][1]}%" title="${k} · ${POS[XV[k-1]][0]}">${top&&FOTOS.has(top.id)?`<b class="ft"><img src="fotos/${top.id}.webp" alt=""><i>${k}</i></b>`:`<b>${k}</b>`}<span>${top?apellido(J(top.id))+(top.id===TEMPORADA.capitan?' (C)':top.id===TEMPORADA.subcapitan?' (VC)':''):'—'}</span></button>`};
   const chip=(k,l)=>`<button class="chip" data-k="fEq" data-v="${k}" aria-pressed="${eq===k}">${l}</button>`;
   return `<section class="view"><div class="head"><div><h2>Formación</h2><p>El equipo que más se repitió en ${EQUIPOS[eq]}: debajo de cada número figura quien más veces usó esa camiseta. Tocá una camiseta para ver todas las alternativas del puesto.</p></div></div>
   <div class="chips" role="group" aria-label="Equipo">${Object.entries(EQUIPOS).map(([k,v])=>chip(k,v)).join('')}</div>
